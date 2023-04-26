@@ -4,12 +4,13 @@ defaults:
   - optimizer: adam
   - _self_
 
+finetune_whole_model: false # applies to pretrained models only
+
 wandb:
-  project: UTKFace-Age-prediction
+  project: test
   group: null
   name: null
-  mode: disabled # or online
-  key: ${oc.env:WANDB_API_KEY}
+  mode: offline # or online
   id: null
   resume: allow
   tags: null

@@ -133,3 +133,4 @@ data/
 outputs/
 logs/
 models/
+wandb/
