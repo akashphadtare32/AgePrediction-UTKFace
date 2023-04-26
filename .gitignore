@@ -130,3 +130,6 @@ dmypy.json
 
 docs/
 data/
+outputs/
+logs/
+models/
