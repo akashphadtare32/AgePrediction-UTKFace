@@ -8,7 +8,7 @@ install:
 	poetry run pre-commit install
 
 activate:
-	poetry shell
+	conda activate age-prediction
 
 setup: initialize_git install
 
