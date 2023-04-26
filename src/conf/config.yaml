@@ -4,7 +4,7 @@ defaults:
 wandb:
   project: UTKFace-Age-prediction
   group: ???
-  name: ???
+  name: null
   mode: online # deprecated
 
 root_dir: .
