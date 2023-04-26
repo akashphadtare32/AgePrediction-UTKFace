@@ -11,6 +11,9 @@ keywords = ["Python", "Poetry"]
 packages = [
     { include = "src" },
 ]
+include = [
+    "src/conf/*"
+]
 
 [tool.poetry.dependencies]
 python = "^3.9"
