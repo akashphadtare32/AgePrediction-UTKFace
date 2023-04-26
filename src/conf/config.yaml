@@ -3,11 +3,11 @@ defaults:
 
 wandb:
   project: UTKFace-Age-prediction
-  group: ???
+  group: null
   name: null
   mode: online # deprecated
+  key: ${oc.env:WANDB_API_KEY}
 
-root_dir: .
 data_dir: data/
 log_dir: logs/
 model_dir: models/
