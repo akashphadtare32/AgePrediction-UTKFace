@@ -2,7 +2,8 @@ initialize_git:
 	git init
 
 install:
-	poetry config virtualenvs.in-project true
+	conda env create -f environment.yml
+	conda activate age-prediction
 	poetry install
 	poetry run pre-commit install
 

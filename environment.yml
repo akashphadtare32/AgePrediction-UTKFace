@@ -1,0 +1,9 @@
+name: age-prediction
+
+channels:
+  - conda-forge
+  - nodefaults
+
+dependencies:
+  - python=3.9.*
+  - tensorflow=2.*
