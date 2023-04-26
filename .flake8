@@ -1,0 +1,6 @@
+[flake8]
+# extend the ignore list by adding
+# extend-ignore = <rules>
+max-line-length = 88
+max-complexity = 15
+docstring-convention = numpy

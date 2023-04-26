@@ -1,0 +1,38 @@
+[tool.poetry]
+name = "AgePrediction-UTKFace"
+version = "0.1.0"
+description = "Age Prediction on the UTK Face Dataset"
+authors = ["Moritz Mistol <moritz.mistol@gmail.com>"]
+readme = "README.md"
+documentation = "https://MoritzM00.github.io/AgePrediction-UTKFace"
+repository = "https://github.com/MoritzM00/AgePrediction-UTKFace"
+license = "MIT"
+keywords = ["Python", "Poetry"]
+packages = [
+    { include = "src" },
+]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = ">=7.2.2"
+pre-commit = ">=3.1.1"
+pdoc3 = ">=0.10.0"
+black = "^23.1.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 88
+
+[tool.isort]
+profile = "black"
+line_length = 88
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+testpaths = ["tests"]
