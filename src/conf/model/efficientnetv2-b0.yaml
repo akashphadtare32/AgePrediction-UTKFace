@@ -1,0 +1,10 @@
+name: EfficientNetV2B0
+target_size:
+  - 224
+  - 224
+include_top: false
+weights: imagenet
+input_shape:
+  - 224
+  - 224
+  - 3

@@ -1,5 +1,6 @@
 """Train the model."""
 import hydra
+import wandb
 from omegaconf import DictConfig
 
 
@@ -12,4 +13,4 @@ def main(cfg: DictConfig) -> None:
     cfg : DictConfig
         Configuration object.
     """
-    print(cfg)
+    run = wandb.init(**cfg.wandb)  # noqa: F841

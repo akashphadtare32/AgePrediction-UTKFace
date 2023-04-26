@@ -1,0 +1,6 @@
+name: UTKFace
+path: UTKFace/
+img_size:
+  - 200
+  - 200
+channels: 3
