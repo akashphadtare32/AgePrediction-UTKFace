@@ -47,5 +47,4 @@ jobs:
       - name: Run tests
         run: |
           conda activate age-prediction
-          which python
-          poetry run pytest
+          python -m pytest
