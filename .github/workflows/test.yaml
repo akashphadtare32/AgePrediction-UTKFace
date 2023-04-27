@@ -30,11 +30,8 @@ jobs:
       - name: Install Poetry
         uses: snok/install-poetry@v1
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
-          cache: "poetry"
+      - name: activate conda env
+        run: conda activate age-prediction
 
       - name: Install packages
         run: poetry install
