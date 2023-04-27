@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest]
         python-version: ["3.9"]
     runs-on: ${{ matrix.os }}
     defaults:
@@ -27,18 +27,12 @@ jobs:
         with:
           activate-environment: age-prediction
           environment-file: environment.yml
-          python-version: ${{ matrix.python-version }}
           auto-activate-base: false
       - run: |
           conda info
           conda list
           conda config --show-sources
           conda config --show
-
-      - name: Install Poetry
-        uses: snok/install-poetry@v1
-        with:
-          virtualenvs-create: false
 
       - name: show poetry env info
         run: poetry env info
