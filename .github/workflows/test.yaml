@@ -18,7 +18,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     defaults:
       run:
-        shell: bash -l {0}
+        shell: bash -el {0}
 
     steps:
       - name: Checkout
@@ -28,7 +28,7 @@ jobs:
           activate-environment: age-prediction
           environment-file: environment.yml
           python-version: ${{ matrix.python-version }}
-          auto-active-base: false
+          auto-activate-base: false
       - run: |
           conda info
           conda list
@@ -47,5 +47,4 @@ jobs:
       - name: Run tests
         run: |
           conda activate age-prediction
-          conda install tensorflow
           poetry run pytest
