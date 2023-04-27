@@ -16,6 +16,9 @@ jobs:
         os: [ubuntu-latest, macos-latest]
         python-version: ["3.9"]
     runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash -el {0}
 
     steps:
       - name: Checkout
@@ -25,13 +28,12 @@ jobs:
           activate-environment: age-prediction
           environment-file: environment.yml
           python-version: ${{ matrix.python-version }}
-          auto-activate-base: false
 
       - name: Install Poetry
         uses: snok/install-poetry@v1
 
-      - name: activate conda env
-        run: conda activate age-prediction
+      - name: show poetry env info
+        run: poetry env info
 
       - name: Install packages
         run: poetry install
