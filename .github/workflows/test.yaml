@@ -47,4 +47,5 @@ jobs:
       - name: Run tests
         run: |
           conda activate age-prediction
-          python -m pytest
+          conda install tensorflow
+          poetry run pytest
