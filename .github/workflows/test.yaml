@@ -28,6 +28,12 @@ jobs:
           activate-environment: age-prediction
           environment-file: environment.yml
           python-version: ${{ matrix.python-version }}
+          auto-active-base: false
+      - run: |
+          conda info
+          conda list
+          conda config --show-sources
+          conda config --show
 
       - name: Install Poetry
         uses: snok/install-poetry@v1
