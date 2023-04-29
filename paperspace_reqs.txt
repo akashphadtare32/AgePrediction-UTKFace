@@ -1,3 +1,2 @@
-poetry
 hydra-core
 wandb
