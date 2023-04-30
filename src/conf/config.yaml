@@ -17,6 +17,16 @@ wandb:
   notes: null
   sync_tensorboard: false
 
+callbacks:
+    early_stopping_patience: 5
+    monitor: val_mae
+    initial_epoch: 0
+    use_wandb: true
+    model_ckpt: true
+    ckpt_filepath: ${ckpt_dir}/model-{epoch:02d}-{val_mae:.2f}
+    visualize_predictions: true
+    with_wandb_ckpt: true
+
 # first round of fine tuning (only the last layers)
 lr_schedule:
   _target_: tensorflow.keras.optimizers.schedules.ExponentialDecay
@@ -34,3 +44,4 @@ lr_schedule_finetuning:
 data_dir: data/
 log_dir: logs/
 model_dir: models/
+ckpt_dir: ckpts/

@@ -1,5 +1,5 @@
 name: UTKFace
-path: UTKFace/
+path: ${data_dir}/UTKFace/
 img_size:
   - 200
   - 200
