@@ -12,6 +12,9 @@ activate:
 
 setup: initialize_git install
 
+download_b3fd:
+	wget -c https://ferhr-my.sharepoint.com/:u:/g/personal/kbr122017_fer_hr/EU4lr6xf_ZhBi9vN_i8h_XEByhasE-qqKlcC7iqk5K9XtQ?e=Yox63W&download=1 -O b3fd.tar.gz
+
 test:
 	poetry run pytest
 
