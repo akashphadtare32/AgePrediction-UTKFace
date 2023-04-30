@@ -2,11 +2,27 @@
 import tensorflow as tf
 from hydra.utils import instantiate
 from omegaconf import DictConfig
+from tensorflow.keras import Input, Model
+from tensorflow.keras.layers import BatchNormalization, Dense, Dropout
 
 
-def instantiate_model(model_instantiate_cfg: DictConfig) -> tf.keras.Model:
+def instantiate_base_model(model_instantiate_cfg: DictConfig) -> tf.keras.Model:
     """Get the model."""
     model = instantiate(model_instantiate_cfg)
+    return model
+
+
+def get_complete_model(model_cfg: DictConfig, channels=3) -> tf.keras.Model:
+    """Get the complete model."""
+    base_model = instantiate_base_model(model_cfg.instantiate)
+    base_model.trainable = False
+
+    # complete the model
+    inputs = Input(shape=(*model_cfg.target_size, channels))
+    x = BatchNormalization()(inputs)
+    x = Dropout(0.2)(x)
+    outputs = Dense(1, activation="relu")(x)
+    model = Model(inputs, outputs)
     return model
 
 
@@ -15,9 +31,8 @@ def build_model_from_cfg(
 ) -> tf.keras.Model:
     """Build the model from the config dict."""
     if model is None:
-        model = instantiate_model(cfg.model.instantiate)
+        model = get_complete_model(cfg.model, channels=cfg.dataset.channels)
 
-    # get the correct lr_schedule
     lr_schedule_cfg = (
         cfg.lr_schedule.stage_1 if first_stage else cfg.lr_schedule.stage_2
     )

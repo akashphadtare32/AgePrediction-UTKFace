@@ -10,3 +10,4 @@ instantiate:
     - 224
     - 224
     - 3
+  pooling: avg

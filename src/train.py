@@ -1,52 +1,16 @@
 """Train the model."""
+import logging
 import multiprocessing
-from logging import Logger
 
 import hydra
 import wandb
-from hydra.utils import instantiate
 from omegaconf import DictConfig, OmegaConf
 
 from src.callbacks import get_callbacks
 from src.dataset import get_dataset, train_test_split
-from src.model import get_model
+from src.model import build_model_from_cfg
 
-logger = Logger(__name__)
-
-
-def fit_model(cfg, model, train_ds, val_ds, callbacks):
-    """Fit the model."""
-    model.fit(
-        train_ds,
-        epochs=cfg.model.epochs,
-        validation_data=val_ds,
-        callbacks=callbacks,
-        use_multiprocessing=True,
-        workers=multiprocessing.cpu_count(),
-    )
-
-    if cfg.finetune_whole_model:
-        # second round of fine-tuning
-
-        model.trainable = True
-
-        # TODO: clean this up
-        lr_schedule = instantiate(cfg.model.lr_schedule_finetuning)
-        optim_partial = instantiate(cfg.model.optimizer)
-        optimizer = optim_partial(lr_schedule)
-
-        loss = "mean_absolute_error"
-        metrics = ["mae"]
-        model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
-        model.summary(print_fn=logger.info)
-        model.fit(
-            train_ds,
-            epochs=cfg.model.epochs,
-            validation_data=val_ds,
-            callbacks=callbacks,
-            use_multiprocessing=True,
-            workers=multiprocessing.cpu_count(),
-        )
+logger = logging.getLogger(__name__)
 
 
 @hydra.main(version_base="1.3", config_path="conf", config_name="config")
@@ -62,7 +26,6 @@ def main(cfg: DictConfig) -> None:
         **cfg.wandb,
         config=OmegaConf.to_container(cfg, resolve=True),
     )
-    logger.info(f"Preparing dataset {cfg.dataset.name}...")
     ds = get_dataset(
         name=cfg.dataset.name,
         data_path=cfg.dataset.path,
@@ -74,10 +37,29 @@ def main(cfg: DictConfig) -> None:
 
     callbacks = get_callbacks(val_ds, **cfg.callbacks)
 
-    model = get_model()
-    # first round of fine-tuning
-    fit_model(cfg, model, train_ds, val_ds, callbacks)
-    logger.info(model.evaluate(test_ds))
+    model = build_model_from_cfg(cfg, first_stage=True)
+    print(model.summary())
+    model.fit(
+        train_ds,
+        epochs=cfg.model.epochs,
+        validation_data=val_ds,
+        callbacks=callbacks,
+        use_multiprocessing=True,
+        workers=multiprocessing.cpu_count(),
+    )
+    # second round of fine-tuning
+    model = build_model_from_cfg(cfg, model=model, first_stage=False)
+    model.trainable = True
+    print(model.summary())
+    model.fit(
+        train_ds,
+        epochs=cfg.model.epochs,
+        validation_data=val_ds,
+        callbacks=callbacks,
+        use_multiprocessing=True,
+        workers=multiprocessing.cpu_count(),
+    )
+    print(model.evaluate(test_ds))
 
 
 if __name__ == "__main__":

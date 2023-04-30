@@ -3,7 +3,7 @@
 import pytest
 from hydra import compose, initialize
 
-from src.model import build_model_from_cfg, instantiate_model
+from src.model import build_model_from_cfg, instantiate_base_model
 
 
 @pytest.fixture(scope="session")
@@ -16,7 +16,7 @@ def efficientnet_config():
 
 def test_instantiate_efficientnet(efficientnet_config):
     """Test that the model can be instantiated."""
-    model = instantiate_model(efficientnet_config.model.instantiate)
+    model = instantiate_base_model(efficientnet_config.model.instantiate)
     assert model.__class__.__name__ == "Functional"
 
 
