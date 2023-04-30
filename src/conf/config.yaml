@@ -7,9 +7,21 @@ defaults:
 
 finetune_whole_model: false # applies to pretrained models only
 
-loss: mean_absolute_error
-metrics:
-  - mae
+train:
+  task: regression
+  loss: mean_absolute_error
+  metrics:
+    - mae
+  epochs: 150
+  batch_size: 32
+
+augment:
+  active: true
+  factors:
+    random_rotation: 0.2
+    random_translation: 0.1
+    random_brightness: 0.1
+    random_flip: horizontal
 
 wandb:
   project: test

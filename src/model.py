@@ -19,7 +19,8 @@ def get_complete_model(model_cfg: DictConfig, channels=3) -> tf.keras.Model:
 
     # complete the model
     inputs = Input(shape=(*model_cfg.target_size, channels))
-    x = BatchNormalization()(inputs)
+    x = base_model(inputs, training=False)
+    x = BatchNormalization()(x)
     x = Dropout(0.2)(x)
     outputs = Dense(1, activation="relu")(x)
     model = Model(inputs, outputs)
@@ -38,11 +39,11 @@ def build_model_from_cfg(
     )
 
     optimizer = build_optimizer_from_cfg(cfg.optimizer, lr_schedule_cfg)
-    loss_fn = cfg.loss
+    loss_fn = cfg.train.loss
     model.compile(
         optimizer=optimizer,
         loss=loss_fn,
-        metrics=["mae"],
+        metrics=cfg.train.metrics,
     )
     return model
 
