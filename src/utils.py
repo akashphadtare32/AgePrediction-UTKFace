@@ -1,6 +1,5 @@
 """Utility functions."""
 import tensorflow as tf
-
 import wandb
 
 

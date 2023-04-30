@@ -51,11 +51,9 @@ def test_instantiate_optimizer(defaults_config):
 
 def test_instantiate_lr_schedule(defaults_config):
     """Test the learning rate schedule instantiation."""
-    # lr_schedule
-
     # instantiate the lr_schedule
-    lr_schedule = instantiate(defaults_config.lr_schedule)
+    lr_schedule = instantiate(defaults_config.lr_schedule.stage_1)
     assert (
         lr_schedule.initial_learning_rate
-        == defaults_config.lr_schedule.initial_learning_rate
+        == defaults_config.lr_schedule.stage_1.initial_learning_rate
     )

@@ -2,9 +2,14 @@ defaults:
   - model: efficientnetv2-b0
   - dataset: utkface
   - optimizer: adam
+  - lr_schedule: exponential_decay
   - _self_
 
 finetune_whole_model: false # applies to pretrained models only
+
+loss: mean_absolute_error
+metrics:
+  - mae
 
 wandb:
   project: test
@@ -26,20 +31,6 @@ callbacks:
     ckpt_filepath: ${ckpt_dir}/model-{epoch:02d}-{val_mae:.2f}
     visualize_predictions: true
     with_wandb_ckpt: true
-
-# first round of fine tuning (only the last layers)
-lr_schedule:
-  _target_: tensorflow.keras.optimizers.schedules.ExponentialDecay
-  initial_learning_rate: 1e-3
-  decay_steps: 100_000
-  decay_rate: 0.96
-
-# when finetuning the whole (pretrained) model
-lr_schedule_finetuning:
-  _target_: tensorflow.keras.optimizers.schedules.ExponentialDecay
-  initial_learning_rate: 1e-5
-  decay_steps: 100_000
-  decay_rate: 0.99
 
 data_dir: data/
 log_dir: logs/
