@@ -44,4 +44,6 @@ jobs:
           poetry install
 
       - name: Run tests
-        run: poetry run pytest
+        run: |
+          conda activate age-prediction
+          poetry run pytest
