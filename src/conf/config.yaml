@@ -44,7 +44,7 @@ callbacks:
     visualize_predictions: true
     with_wandb_ckpt: false
 
-data_dir: data/
-log_dir: logs/
-model_dir: models/
-ckpt_dir: ckpts/
+data_dir: data
+log_dir: logs
+model_dir: models
+ckpt_dir: ckpts
