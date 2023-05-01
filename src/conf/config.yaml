@@ -24,13 +24,14 @@ augment:
     random_flip: horizontal
 
 wandb:
-  project: test
+  project: UTKFace-Age-Regression
   group: null
   name: null
-  mode: offline # or online
+  mode: online # or online
   id: null
   resume: allow
-  tags: null
+  tags:
+    - ${model.name}
   notes: null
   sync_tensorboard: false
 
