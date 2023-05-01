@@ -15,7 +15,7 @@ setup: initialize_git install
 download_b3fd:
 	@echo "Downloading B3FD dataset (5+ GB)"
 	wget -c https://ferhr-my.sharepoint.com/:u:/g/personal/kbr122017_fer_hr/EU4lr6xf_ZhBi9vN_i8h_XEByhasE-qqKlcC7iqk5K9XtQ\?e\=Yox63W\&download\=1 -O b3fd.tar.gz
-	wget -c https://ferhr-my.sharepoint.com/:u:/g/personal/kbr122017_fer_hr/EcKiZtbTTb5Ep-fN32wCx4oBIcY64Wr8JhxlgPkV33M7cg?e=Q6NtUX\&download\=1 -O b3fd_metadata.tar.gz
+	wget -c https://ferhr-my.sharepoint.com/:u:/g/personal/kbr122017_fer_hr/EcKiZtbTTb5Ep-fN32wCx4oBIcY64Wr8JhxlgPkV33M7cg\?e\=Q6NtUX\&download\=1 -O b3fd_metadata.tar.gz
 extract_b3fd:
 	@echo "Extracting B3FD dataset to data (13 GB)"
 	tar -xvzf b3fd.tar.gz -C data
