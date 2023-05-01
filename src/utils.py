@@ -48,5 +48,5 @@ def save_and_upload_model(model, model_dir, artifact_name=None, upload=True):
             artifact_name,
             type="model",
         )
-        trained_model_artifact.add_dir(model_dir)
+        trained_model_artifact.add_dir(artifact_name)
         wandb.run.log_artifact(trained_model_artifact)

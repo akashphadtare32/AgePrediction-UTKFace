@@ -109,7 +109,7 @@ def main(cfg: DictConfig) -> None:
             model_name = "model-best"
             model_dir = cfg.model_dir + "/" + model_name
             upload = False
-        save_and_upload_model(model, model_name, model_dir, upload=upload)
+        save_and_upload_model(model, model_dir, model_name, upload=upload)
 
 
 if __name__ == "__main__":
