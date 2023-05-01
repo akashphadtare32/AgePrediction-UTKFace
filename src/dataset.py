@@ -1,7 +1,6 @@
 """Datasets module."""
 
 import logging
-import os
 from collections.abc import Sequence
 
 import tensorflow as tf
@@ -11,6 +10,8 @@ from tensorflow.keras.layers import (
     RandomRotation,
     RandomTranslation,
 )
+
+from src.datasets import get_b3fd_dataset, get_utkface_dataset
 
 logger = logging.getLogger(__name__)
 
@@ -60,16 +61,6 @@ def prepare_for_training(
     return ds.prefetch(buffer_size=AUTOTUNE)
 
 
-def get_dataset(
-    name: str, data_path: str, target_size: Sequence[int] = (200, 200)
-) -> tf.data.Dataset:
-    """Get the datasets."""
-    if name.lower() == "utkface":
-        return get_utkface_dataset(data_path=data_path, target_size=target_size)
-    else:
-        raise ValueError(f"Invalid dataset name given: {name}")
-
-
 def train_test_split(ds: tf.data.Dataset, split: float = 0.8):
     """Split the dataset into train and test sets."""
     train_size = int(len(ds) * split)
@@ -103,24 +94,21 @@ def get_data_augmentation_pipeline(
     )
 
 
-def get_utkface_dataset(data_path: str, target_size: Sequence[int] = (200, 200)):
-    """Get the UTKFace dataset."""
-    dataset = tf.data.Dataset.list_files(data_path + "*")
-
-    def process_path(file_path):
-        # read the age from the filename
-        filename = tf.strings.split(file_path, os.sep)[-1]
-        label = tf.strings.split(filename, "_")[0]
-        label = tf.strings.to_number(label, out_type=tf.dtypes.int32)
-
-        # read and decode the image
-        raw = tf.io.read_file(file_path)
-        image = tf.image.decode_jpeg(raw, channels=3)
-        logger.debug("Initial shape: ", image.shape)
-        image = tf.image.resize(image, [*target_size])
-        image.set_shape([*target_size, 3])
-        logger.debug("Final shape: ", image.shape)
-        return image, label
-
-    labeled_dataset = dataset.map(process_path)
-    return labeled_dataset
+def get_dataset(
+    name: str,
+    data_path: str,
+    target_size: Sequence[int] = (200, 200),
+    metadata_path: str = None,
+) -> tf.data.Dataset:
+    """Get the datasets."""
+    name = name.lower()
+    if name == "utkface":
+        return get_utkface_dataset(
+            data_path=data_path, target_size=target_size, metadata_path=metadata_path
+        )
+    elif name == "b3fd":
+        return get_b3fd_dataset(
+            data_path=data_path, target_size=target_size, metadata_path=metadata_path
+        )
+    else:
+        raise ValueError(f"Invalid dataset name given: {name}")
