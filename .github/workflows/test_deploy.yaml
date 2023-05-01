@@ -35,16 +35,16 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v3
 
-      - name: Cache conda
-        uses: actions/cache@v3
-        env:
-          # Increase this value to reset cache if etc/example-environment.yml has not changed
-          CACHE_NUMBER: 0
-        with:
-          path: ~/conda_pkgs_dir
-          key:
-            ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-${{
-            hashFiles('etc/example-environment.yml') }}
+      # - name: Cache conda
+      #   uses: actions/cache@v3
+      #   env:
+      #     # Increase this value to reset cache if etc/example-environment.yml has not changed
+      #     CACHE_NUMBER: 0
+      #   with:
+      #     path: ~/conda_pkgs_dir
+      #     key:
+      #       ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-${{
+      #       hashFiles('etc/example-environment.yml') }}
 
       - name: Setup Conda
         uses: conda-incubator/setup-miniconda@v2
