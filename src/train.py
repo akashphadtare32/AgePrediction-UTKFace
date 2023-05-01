@@ -110,6 +110,7 @@ def main(cfg: DictConfig) -> None:
             model_dir = cfg.model_dir + "/" + model_name
             upload = False
         save_and_upload_model(model, model_dir, model_name, upload=upload)
+    wandb.finish()
 
 
 if __name__ == "__main__":
