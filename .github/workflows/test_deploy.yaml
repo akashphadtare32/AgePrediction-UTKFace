@@ -26,25 +26,32 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -l {0}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Setup Pages
         uses: actions/configure-pages@v3
 
-      - name: Install Poetry
-        uses: snok/install-poetry@v1
-
-      - name: Setup Python
-        uses: actions/setup-python@v4
+      - name: Setup Conda
+        uses: conda-incubator/setup-miniconda@v2
         with:
-          python-version: 3.9
-          cache: "poetry"
+          activate-environment: age-prediction
+          environment-file: environment.yml
+          python-version: ${{ matrix.python-version }}
+          auto-activate-base: false
+
       - name: Install packages
-        run: poetry install
+        run: |
+          conda activate age-prediction
+          poetry install
 
       - name: Build docs
-        run: poetry run pdoc src --html -f -o docs
+        run: |
+          conda activate age-prediction
+          poetry run pdoc src --html -f -o docs
 
       - name: Move docs
         run: mv docs/src/* docs && rm -rf docs/src
