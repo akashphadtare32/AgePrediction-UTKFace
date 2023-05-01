@@ -5,8 +5,6 @@ defaults:
   - lr_schedule: exponential_decay
   - _self_
 
-finetune_whole_model: false # applies to pretrained models only
-
 train:
   task: regression
   loss: mean_absolute_error

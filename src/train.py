@@ -78,21 +78,21 @@ def main(cfg: DictConfig) -> None:
         use_multiprocessing=True,
         workers=multiprocessing.cpu_count(),
     )
-    wandb.log({"test_loss": model.evaluate(test_ds)[0]})
-    # second round of fine-tuning
-    model = build_model_from_cfg(cfg, model=model, first_stage=False)
-    model.trainable = True
-    print(model.summary())
-    callbacks = get_callbacks(val_ds, initial_epoch=wandb.run.step, **cfg.callbacks)
-    model.fit(
-        train_ds,
-        epochs=cfg.train.epochs,
-        initial_epoch=wandb.run.step,
-        validation_data=val_ds,
-        callbacks=callbacks,
-        use_multiprocessing=True,
-        workers=multiprocessing.cpu_count(),
-    )
+    if cfg.model.fine_whole_model:
+        # second round of fine-tuning
+        model = build_model_from_cfg(cfg, model=model, first_stage=False)
+        model.trainable = True
+        print(model.summary())
+        callbacks = get_callbacks(val_ds, initial_epoch=wandb.run.step, **cfg.callbacks)
+        model.fit(
+            train_ds,
+            epochs=cfg.train.epochs,
+            initial_epoch=wandb.run.step,
+            validation_data=val_ds,
+            callbacks=callbacks,
+            use_multiprocessing=True,
+            workers=multiprocessing.cpu_count(),
+        )
     wandb.log({"test_loss": model.evaluate(test_ds)[0]})
 
 
