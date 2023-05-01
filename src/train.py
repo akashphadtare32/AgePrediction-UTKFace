@@ -92,7 +92,7 @@ def main(cfg: DictConfig) -> None:
         use_multiprocessing=True,
         workers=multiprocessing.cpu_count(),
     )
-    print(model.evaluate(test_ds))
+    wandb.log({"test_loss": model.evaluate(test_ds)[0]})
 
 
 if __name__ == "__main__":
