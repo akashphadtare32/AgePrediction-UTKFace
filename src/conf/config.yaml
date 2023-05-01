@@ -12,6 +12,7 @@ train:
     - mae
   epochs: 150
   batch_size: 32
+  seed: 0
 
 augment:
   active: true

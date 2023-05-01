@@ -40,8 +40,10 @@ def save_and_upload_model(model, model_dir, artifact_name=None, upload=True):
     upload : bool, optional
         Whether to upload the model to W&B, by default True
     """
+    print(f"Saving model to {model_dir}")
     model.save(model_dir)
     if upload:
+        print("Uploading model artifact to W&B:", artifact_name)
         trained_model_artifact = wandb.Artifact(
             artifact_name,
             type="model",

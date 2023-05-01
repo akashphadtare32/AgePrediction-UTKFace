@@ -3,6 +3,8 @@ import logging
 import multiprocessing
 
 import hydra
+import numpy as np
+import tensorflow as tf
 from omegaconf import DictConfig, OmegaConf
 
 import wandb
@@ -28,6 +30,8 @@ def main(cfg: DictConfig) -> None:
     cfg : DictConfig
         Configuration object.
     """
+    tf.random.set_seed(cfg.train.seed)
+    np.random.seed(cfg.train.seed)
     wandb.init(
         **cfg.wandb,
         config=OmegaConf.to_container(cfg, resolve=True),
@@ -79,7 +83,7 @@ def main(cfg: DictConfig) -> None:
         use_multiprocessing=True,
         workers=multiprocessing.cpu_count(),
     )
-    if cfg.model.fine_whole_model:
+    if cfg.model.finetune_whole_model:
         # second round of fine-tuning
         model = build_model_from_cfg(cfg, model=model, first_stage=False)
         model.trainable = True
