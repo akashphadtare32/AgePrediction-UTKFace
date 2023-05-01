@@ -10,7 +10,7 @@ from src.model import build_model_from_cfg, instantiate_base_model
 def efficientnet_config():
     """Return the config for the EfficientNet model."""
     with initialize(version_base="1.3", config_path="../src/conf"):
-        cfg = compose(config_name="config", overrides=["model=efficientnetv2b0"])
+        cfg = compose(config_name="config", overrides=["model=efficientnetv2"])
         return cfg
 
 

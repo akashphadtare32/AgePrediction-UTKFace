@@ -1,5 +1,5 @@
 defaults:
-  - model: efficientnetv2b0
+  - model: efficientnetv2
   - dataset: utkface
   - optimizer: adam
   - lr_schedule: exponential_decay

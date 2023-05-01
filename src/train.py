@@ -78,6 +78,7 @@ def main(cfg: DictConfig) -> None:
         use_multiprocessing=True,
         workers=multiprocessing.cpu_count(),
     )
+    wandb.log({"test_loss": model.evaluate(test_ds)[0]})
     # second round of fine-tuning
     model = build_model_from_cfg(cfg, model=model, first_stage=False)
     model.trainable = True
