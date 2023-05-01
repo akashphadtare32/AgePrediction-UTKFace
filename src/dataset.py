@@ -95,7 +95,6 @@ def get_data_augmentation_pipeline(
         data_augmentation.add(RandomFlip(mode=random_flip))
     if random_brightness:
         data_augmentation.add(RandomBrightness(factor=random_brightness))
-    print(data_augmentation.summary())
     return data_augmentation
 
 
