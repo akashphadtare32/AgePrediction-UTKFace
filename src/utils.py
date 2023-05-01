@@ -24,3 +24,27 @@ def restore_model(run_id: str, version: int):
     artifact_dir = artifact.download()
     model = tf.keras.models.load_model(artifact_dir)
     return model
+
+
+def save_and_upload_model(model, model_dir, artifact_name=None, upload=True):
+    """Save the model and optionally upload it to W&B.
+
+    Parameters
+    ----------
+    model : tf.keras.Model
+        The model to save.
+    artifact_name : str
+        The name of the artifact. Ignored, if upload is False.
+    model_dir : str
+        The directory to save the model to.
+    upload : bool, optional
+        Whether to upload the model to W&B, by default True
+    """
+    model.save(model_dir)
+    if upload:
+        trained_model_artifact = wandb.Artifact(
+            artifact_name,
+            type="model",
+        )
+        trained_model_artifact.add_dir(model_dir)
+        wandb.run.log_artifact(trained_model_artifact)

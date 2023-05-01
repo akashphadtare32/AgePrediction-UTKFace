@@ -14,6 +14,7 @@ from src.dataset import (
     train_test_split,
 )
 from src.model import build_model_from_cfg
+from src.utils import save_and_upload_model
 
 logger = logging.getLogger(__name__)
 
@@ -94,6 +95,17 @@ def main(cfg: DictConfig) -> None:
             workers=multiprocessing.cpu_count(),
         )
     wandb.log({"test_loss": model.evaluate(test_ds)[0]})
+
+    if not cfg.callbacks.model_ckpt:
+        if cfg.wandb.mode == "online":
+            model_name = f"run_{wandb.run.id}_model-v{wandb.run.step}"
+            model_dir = cfg.model_dir + "/" + wandb.run.id
+            upload = True
+        else:
+            model_name = "model-best"
+            model_dir = cfg.model_dir + "/" + model_name
+            upload = False
+        save_and_upload_model(model, model_name, model_dir, upload=upload)
 
 
 if __name__ == "__main__":
