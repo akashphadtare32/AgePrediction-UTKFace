@@ -1,3 +1,4 @@
+architecture: EfficientNetV2
 version: B0 # version ranges from B0 to B3 and S, M and L
 name: EfficientNetV2${model.version}
 target_size:

@@ -25,7 +25,7 @@ augment:
 
 wandb:
   project: UTKFace-Age-Regression
-  group: null
+  group: ${model.architecture}
   name: null
   mode: online # or online
   id: null
