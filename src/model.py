@@ -56,13 +56,3 @@ def build_optimizer_from_cfg(
     lr_schedule = instantiate(lr_schedule_cfg)
     optimizer = optimizer(lr_schedule)
     return optimizer
-
-
-def compile_model(model, optimizer, lr_schedule, loss_fn):
-    """Build ."""
-    optimizer = optimizer(lr_schedule)
-    return model.compile(
-        optimizer=optimizer,
-        loss=loss_fn,
-        metrics=["mae"],
-    )
