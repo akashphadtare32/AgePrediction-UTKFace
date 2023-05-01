@@ -42,7 +42,7 @@ callbacks:
     model_ckpt: true
     ckpt_filepath: ${ckpt_dir}/model-{epoch:02d}-{val_mae:.2f}
     visualize_predictions: true
-    with_wandb_ckpt: true
+    with_wandb_ckpt: false
 
 data_dir: data/
 log_dir: logs/

@@ -82,6 +82,7 @@ def main(cfg: DictConfig) -> None:
     model = build_model_from_cfg(cfg, model=model, first_stage=False)
     model.trainable = True
     print(model.summary())
+    callbacks = get_callbacks(val_ds, initial_epoch=wandb.run.step, **cfg.callbacks)
     model.fit(
         train_ds,
         epochs=cfg.train.epochs,
