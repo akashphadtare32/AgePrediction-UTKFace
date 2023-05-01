@@ -19,7 +19,7 @@ augment:
   factors:
     random_rotation: 0.2
     random_translation: 0.1
-    random_brightness: 0.1
+    random_brightness: null
     random_flip: horizontal
 
 wandb:

@@ -80,18 +80,23 @@ def get_data_augmentation_pipeline(
     random_brightness: float = 0.2,
 ):
     """Get the data augmentation pipeline."""
-    return tf.keras.Sequential(
-        [
-            RandomRotation(factor=random_rotation),
+    data_augmentation = tf.keras.Sequential(name="data_augmentation")
+
+    if random_rotation:
+        data_augmentation.add(RandomRotation(factor=random_rotation))
+    if random_translation:
+        data_augmentation.add(
             RandomTranslation(
                 width_factor=random_translation,
                 height_factor=random_translation,
-            ),
-            RandomFlip(mode=random_flip),
-            RandomBrightness(factor=random_brightness),
-        ],
-        name="data_augmentation",
-    )
+            )
+        )
+    if random_flip:
+        data_augmentation.add(RandomFlip(mode=random_flip))
+    if random_brightness:
+        data_augmentation.add(RandomBrightness(factor=random_brightness))
+    print(data_augmentation.summary())
+    return data_augmentation
 
 
 def get_dataset(
