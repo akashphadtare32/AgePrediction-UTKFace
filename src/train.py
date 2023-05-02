@@ -42,8 +42,8 @@ def main(cfg: DictConfig) -> None:
         target_size=cfg.model.target_size,
     )
     # TODO: Run cross validation on the small utk face dataset
-    train_ds, test_ds = train_test_split(ds, split=0.9)
-    train_ds, val_ds = train_test_split(train_ds, split=0.9)
+    # train_ds, test_ds = train_test_split(ds, split=0.8)
+    train_ds, val_ds = train_test_split(ds, split=0.8)
 
     if cfg.augment.active:
         data_augmentation_pipeline = get_data_augmentation_pipeline(
@@ -65,12 +65,12 @@ def main(cfg: DictConfig) -> None:
         shuffle=False,
         augment=False,
     )
-    test_ds = prepare_for_training(
-        test_ds,
-        batch_size=cfg.train.batch_size,
-        shuffle=False,
-        augment=False,
-    )
+    # test_ds = prepare_for_training(
+    #     test_ds,
+    #     batch_size=cfg.train.batch_size,
+    #     shuffle=False,
+    #     augment=False,
+    # )
 
     callbacks = get_callbacks(val_ds, **cfg.callbacks)
 
@@ -99,11 +99,11 @@ def main(cfg: DictConfig) -> None:
             use_multiprocessing=True,
             workers=multiprocessing.cpu_count(),
         )
-    wandb.log({"test_loss": model.evaluate(test_ds)[0]})
+    # wandb.log({"test_loss": model.evaluate(test_ds)[0]})
 
     if not cfg.callbacks.model_ckpt:
         if cfg.wandb.mode == "online":
-            model_name = f"run_{wandb.run.id}_model-v{wandb.run.step}"
+            model_name = f"run_{wandb.run.id}_model"
             model_dir = cfg.model_dir + "/" + wandb.run.id
             upload = True
         else:
