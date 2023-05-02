@@ -5,7 +5,7 @@ from omegaconf import DictConfig
 from tensorflow.keras import Input, Model
 from tensorflow.keras.layers import BatchNormalization, Dense, Dropout
 
-from src.custom_models import vgg
+from src.custom_models import resnet, vgg
 
 
 def instantiate_base_model(model_instantiate_cfg: DictConfig) -> tf.keras.Model:
@@ -33,9 +33,12 @@ def get_complete_model(model_cfg: DictConfig, channels=3) -> tf.keras.Model:
 
     if model_cfg.architecture.lower() == "vgg":
         x = vgg.apply_top_layers(x)
+    elif model_cfg.architecture.lower() == "resnet":
+        x = resnet.apply_top_layers(x)
     else:
         x = BatchNormalization()(x)
         x = Dropout(0.2)(x)
+
     outputs = Dense(1, activation="relu")(x)
     model = Model(inputs, outputs)
     return model
