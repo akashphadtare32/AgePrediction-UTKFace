@@ -5,6 +5,8 @@ from omegaconf import DictConfig
 from tensorflow.keras import Input, Model
 from tensorflow.keras.layers import BatchNormalization, Dense, Dropout
 
+from src.custom_models import vgg
+
 
 def instantiate_base_model(model_instantiate_cfg: DictConfig) -> tf.keras.Model:
     """Get the model."""
@@ -28,8 +30,12 @@ def get_complete_model(model_cfg: DictConfig, channels=3) -> tf.keras.Model:
     inputs = Input(shape=(*model_cfg.target_size, channels))
     x = preprocessing(inputs) if preprocessing is not None else inputs
     x = base_model(x, training=False)
-    x = BatchNormalization()(x)
-    x = Dropout(0.2)(x)
+
+    if model_cfg.architecture.lower() == "vgg":
+        x = vgg.apply_top_layers(x)
+    else:
+        x = BatchNormalization()(x)
+        x = Dropout(0.2)(x)
     outputs = Dense(1, activation="relu")(x)
     model = Model(inputs, outputs)
     return model
