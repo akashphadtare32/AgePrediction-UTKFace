@@ -1,0 +1,17 @@
+architecture: ConvNeXt
+version: Tiny # Tiny, Base, Small, Large, XLarge
+name: ConvNeXt${model.version}
+finetune_whole_model: true
+preprocessing: null
+target_size:
+  - 200
+  - 200
+instantiate:
+  _target_: tensorflow.keras.applications.ConvNeXt${model.version}
+  include_top: false
+  weights: imagenet
+  input_shape:
+    - 200
+    - 200
+    - 3
+  pooling: avg
