@@ -1,0 +1,18 @@
+architecture: ResNet
+version: 50 # or 101, 152
+name: ResNet${model.version}
+finetune_whole_model: true
+preprocessing:
+  _target_: tf.keras.applications.resnet.preprocess_input
+target_size:
+  - 224
+  - 224
+instantiate:
+  _target_: tensorflow.keras.applications.ResNet${model.version}
+  include_top: false
+  weights: imagenet
+  input_shape:
+    - 224
+    - 224
+    - 3
+  pooling: avg
