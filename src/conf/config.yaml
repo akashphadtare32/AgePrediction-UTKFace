@@ -17,7 +17,7 @@ train:
 augment:
   active: true
   factors:
-    random_rotation: 0.2
+    random_rotation: 0.1
     random_translation: 0.1
     random_brightness: null
     random_flip: horizontal
@@ -38,7 +38,7 @@ callbacks:
     early_stopping_patience: 5
     monitor: val_mae
     use_wandb: true
-    model_ckpt: true
+    model_ckpt: false
     ckpt_filepath: ${ckpt_dir}/model-{epoch:02d}-{val_mae:.2f}
     visualize_predictions: true
     with_wandb_ckpt: false

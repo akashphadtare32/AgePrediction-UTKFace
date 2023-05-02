@@ -1,2 +1,3 @@
 _target_: tensorflow.keras.optimizers.AdamW
 _partial_: true
+weight_decay: 5e-4
