@@ -1,0 +1,19 @@
+architecture: VGG
+version: 16 # or 19
+name: VGG${model.version}
+finetune_whole_model: true
+preprocessing:
+  _target_: tensorflow.keras.applications.vgg${model.version}.preprocess_input
+  _partial_: true
+target_size:
+  - 200
+  - 200
+instantiate:
+  _target_: tensorflow.keras.applications.VGG${model.version}
+  include_top: false
+  weights: imagenet
+  input_shape:
+    - 200
+    - 200
+    - 3
+  pooling: avg

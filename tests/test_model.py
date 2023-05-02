@@ -2,8 +2,13 @@
 
 import pytest
 from hydra import compose, initialize
+from tensorflow.keras import Input
 
-from src.model import build_model_from_cfg, instantiate_base_model
+from src.model import (
+    build_model_from_cfg,
+    instantiate_base_model,
+    instantiate_preprocessing,
+)
 
 
 @pytest.fixture(scope="session")
@@ -44,3 +49,20 @@ def test_build_from_cfg_stage2(efficientnet_config):
 
     optim_config = model.optimizer.get_config()
     assert optim_config["learning_rate"]["config"]["initial_learning_rate"] == actual_lr
+
+
+def test_no_preprocessing(efficientnet_config):
+    """Test that the preprocessing function can be applied."""
+    preprocessing = instantiate_preprocessing(efficientnet_config.model.preprocessing)
+    assert preprocessing is None
+
+
+def test_with_preprocessing():
+    """Test that the preprocessing function can be applied."""
+    with initialize(version_base="1.3", config_path="../src/conf"):
+        cfg = compose(config_name="config", overrides=["model=resnet"])
+
+        x = Input(shape=(224, 224, 3))
+        preprocessing = instantiate_preprocessing(cfg.model.preprocessing)
+        assert preprocessing is not None
+        x = preprocessing(x)

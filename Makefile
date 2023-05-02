@@ -24,7 +24,7 @@ extract_b3fd:
 setup_b3fd: download_b3fd extract_b3fd
 
 test:
-	poetry run pytest
+	poetry run pytest -p no:warnings
 
 docs_view:
 	poetry run pdoc src --http localhost:8080

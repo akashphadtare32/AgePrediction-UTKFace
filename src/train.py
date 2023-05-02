@@ -41,6 +41,7 @@ def main(cfg: DictConfig) -> None:
         data_path=cfg.dataset.path,
         target_size=cfg.model.target_size,
     )
+    # TODO: Run cross validation on the small utk face dataset
     train_ds, test_ds = train_test_split(ds, split=0.9)
     train_ds, val_ds = train_test_split(train_ds, split=0.9)
 

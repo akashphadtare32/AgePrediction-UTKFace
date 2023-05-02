@@ -12,14 +12,22 @@ def instantiate_base_model(model_instantiate_cfg: DictConfig) -> tf.keras.Model:
     return model
 
 
+def instantiate_preprocessing(preprocessing: DictConfig):
+    """Instantiate the preprocessing function."""
+    if preprocessing is not None:
+        return instantiate(preprocessing)
+
+
 def get_complete_model(model_cfg: DictConfig, channels=3) -> tf.keras.Model:
     """Get the complete model."""
     base_model = instantiate_base_model(model_cfg.instantiate)
     base_model.trainable = False
 
+    preprocessing = instantiate_preprocessing(model_cfg.preprocessing)
     # complete the model
     inputs = Input(shape=(*model_cfg.target_size, channels))
-    x = base_model(inputs, training=False)
+    x = preprocessing(inputs) if preprocessing is not None else inputs
+    x = base_model(x, training=False)
     x = BatchNormalization()(x)
     x = Dropout(0.2)(x)
     outputs = Dense(1, activation="relu")(x)
