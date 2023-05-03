@@ -65,6 +65,9 @@ def main(cfg: DictConfig) -> None:
         shuffle=False,
         augment=False,
     )
+    if cfg.train.cache_dataset:
+        train_ds = train_ds.cache()
+        val_ds = val_ds.cache()
     # test_ds = prepare_for_training(
     #     test_ds,
     #     batch_size=cfg.train.batch_size,
