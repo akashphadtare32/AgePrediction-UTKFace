@@ -54,7 +54,7 @@ def get_callbacks(
         if model_ckpt and with_wandb_ckpt:
             callbacks.append(
                 WandbModelCheckpoint(
-                    ckpt_filepath, monitor=monitor, save_best_only=True
+                    ckpt_filepath, monitor=monitor, save_best_only=True, verbose=1
                 )
             )
         if visualize_predictions:
