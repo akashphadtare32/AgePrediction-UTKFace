@@ -12,20 +12,14 @@ from tensorflow.keras.layers import (
 
 def get_base_model(input_shape):
     """Get the baseline CNN model."""
-    # convert this to keras functional
     model = Sequential(
         [
             Input(shape=input_shape),
-            Conv2D(128, kernel_size=(3, 3), activation="relu"),
-            Conv2D(128, kernel_size=(3, 3), activation="relu"),
+            Conv2D(32, kernel_size=(3, 3), activation="relu"),
+            Conv2D(32, kernel_size=(3, 3), activation="relu"),
             MaxPooling2D(),
-            Dropout(0.25),
-            Conv2D(128, kernel_size=(3, 3), activation="relu"),
-            Conv2D(128, kernel_size=(3, 3), activation="relu"),
-            MaxPooling2D(),
-            Dropout(0.25),
-            Conv2D(128, kernel_size=(3, 3), activation="relu"),
-            Conv2D(128, kernel_size=(3, 3), activation="relu"),
+            Conv2D(64, kernel_size=(3, 3), activation="relu"),
+            Conv2D(64, kernel_size=(3, 3), activation="relu"),
             MaxPooling2D(),
             Flatten(),
             Dropout(0.25),
