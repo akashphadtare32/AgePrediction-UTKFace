@@ -6,15 +6,12 @@ finetune_whole_model: true
 preprocessing:
   _target_: tensorflow.keras.applications.vgg${model.version}.preprocess_input
   _partial_: true
-target_size:
-  - 200
-  - 200
 instantiate:
   _target_: tensorflow.keras.applications.${model.architecture}${model.version}
   include_top: false
   weights: imagenet
   input_shape:
-    - 200
-    - 200
-    - 3
+    - ${train.target_size[0]}
+    - ${train.target_size[1]}
+    - ${dataset.channels}
   pooling: avg
