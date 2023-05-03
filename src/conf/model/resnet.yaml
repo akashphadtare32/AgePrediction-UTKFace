@@ -1,6 +1,7 @@
 architecture: ResNet
 version: 50 # or 101, 152
-name: ResNet${model.version}
+name: ${model.architecture}${model.version}
+freeze_base: true
 finetune_whole_model: true
 preprocessing:
   _target_: tensorflow.keras.applications.resnet.preprocess_input
@@ -9,7 +10,7 @@ target_size:
   - 200
   - 200
 instantiate:
-  _target_: tensorflow.keras.applications.ResNet${model.version}
+  _target_: tensorflow.keras.applications.${model.architecture}${model.version}
   include_top: false
   weights: imagenet
   input_shape:

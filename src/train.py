@@ -88,7 +88,7 @@ def main(cfg: DictConfig) -> None:
         # second round of fine-tuning
         model = build_model_from_cfg(cfg, model=model, first_stage=False)
         model.trainable = True
-        print(model.summary())
+        print(model.summary(expand_nested=True))
         callbacks = get_callbacks(val_ds, initial_epoch=wandb.run.step, **cfg.callbacks)
         model.fit(
             train_ds,

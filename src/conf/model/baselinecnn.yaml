@@ -1,0 +1,17 @@
+architecture: BaselineCNN
+version: v1 # Tiny, Base, Small, Large, XLarge
+name: ${model.architecture}${model.version}
+freeze_base: false
+finetune_whole_model: false
+preprocessing:
+  _target_: src.custom_models.baseline_cnn.preprocess_input
+  _partial_: true
+target_size:
+  - 200
+  - 200
+instantiate:
+  _target_: src.custom_models.baseline_cnn.get_base_model
+  input_shape:
+    - 200
+    - 200
+    - 3

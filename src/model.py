@@ -23,7 +23,10 @@ def instantiate_preprocessing(preprocessing: DictConfig):
 def get_complete_model(model_cfg: DictConfig, channels=3) -> tf.keras.Model:
     """Get the complete model."""
     base_model = instantiate_base_model(model_cfg.instantiate)
-    base_model.trainable = False
+
+    # if the model has a base model, then we freeze it
+    # (e.g. VGG, ResNet, EfficientNetV2 ...)
+    base_model.trainable = model_cfg.freeze_base
 
     preprocessing = instantiate_preprocessing(model_cfg.preprocessing)
     inputs = Input(shape=(*model_cfg.target_size, channels))
