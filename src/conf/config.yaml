@@ -13,6 +13,9 @@ train:
   epochs: 150
   batch_size: 32
   seed: 0
+  target_size:
+    - 200
+    - 200
 
 augment:
   active: true

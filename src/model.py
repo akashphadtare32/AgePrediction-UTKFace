@@ -15,21 +15,36 @@ def instantiate_base_model(model_instantiate_cfg: DictConfig) -> tf.keras.Model:
 
 
 def instantiate_preprocessing(preprocessing: DictConfig):
-    """Instantiate the preprocessing function."""
+    """Instantiate the preprocessing function.
+
+    Parameters
+    ----------
+    preprocessing : DictConfig or None
+        The preprocessing function to instantiate with hydra. If None,
+        then no preprocessing is applied.
+
+    Returns
+    -------
+    a partial object
+        The preprocessing function to apply to the inputs.
+    """
     if preprocessing is not None:
         return instantiate(preprocessing)
 
 
-def get_complete_model(model_cfg: DictConfig, channels=3) -> tf.keras.Model:
+def get_complete_model(
+    model_cfg: DictConfig, target_size=(200, 200), channels=3
+) -> tf.keras.Model:
     """Get the complete model."""
     base_model = instantiate_base_model(model_cfg.instantiate)
 
     # if the model has a base model, then we freeze it
     # (e.g. VGG, ResNet, EfficientNetV2 ...)
-    base_model.trainable = model_cfg.freeze_base
+    # for the baseline cnn, this is just the model itself
+    base_model.trainable = not model_cfg.freeze_base
 
     preprocessing = instantiate_preprocessing(model_cfg.preprocessing)
-    inputs = Input(shape=(*model_cfg.target_size, channels))
+    inputs = Input(shape=(*target_size, channels))
     x = preprocessing(inputs) if preprocessing is not None else inputs
 
     x = base_model(x, training=False)
@@ -55,7 +70,9 @@ def build_model_from_cfg(
 ) -> tf.keras.Model:
     """Build the model from the config dict."""
     if model is None:
-        model = get_complete_model(cfg.model, channels=cfg.dataset.channels)
+        model = get_complete_model(
+            cfg.model, target_size=cfg.train.target_size, channels=cfg.dataset.channels
+        )
 
     lr_schedule_cfg = (
         cfg.lr_schedule.stage_1 if first_stage else cfg.lr_schedule.stage_2
