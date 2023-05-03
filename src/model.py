@@ -3,9 +3,9 @@ import tensorflow as tf
 from hydra.utils import instantiate
 from omegaconf import DictConfig
 from tensorflow.keras import Input, Model
-from tensorflow.keras.layers import BatchNormalization, Dense, Dropout
+from tensorflow.keras.layers import Dense
 
-from src.custom_models import resnet, vgg
+from src.custom_models import convnext, efficientnetv2, resnet, vgg
 
 
 def instantiate_base_model(model_instantiate_cfg: DictConfig) -> tf.keras.Model:
@@ -26,18 +26,21 @@ def get_complete_model(model_cfg: DictConfig, channels=3) -> tf.keras.Model:
     base_model.trainable = False
 
     preprocessing = instantiate_preprocessing(model_cfg.preprocessing)
-    # complete the model
     inputs = Input(shape=(*model_cfg.target_size, channels))
     x = preprocessing(inputs) if preprocessing is not None else inputs
+
     x = base_model(x, training=False)
 
-    if model_cfg.architecture.lower() == "vgg":
+    # determine the top layers based on the architecture
+    model_architecture = model_cfg.architecture.lower()
+    if model_architecture == "vgg":
         x = vgg.apply_top_layers(x)
-    elif model_cfg.architecture.lower() == "resnet":
+    elif model_architecture == "resnet":
         x = resnet.apply_top_layers(x)
-    else:
-        x = BatchNormalization()(x)
-        x = Dropout(0.2)(x)
+    elif model_architecture == "convnext":
+        x = convnext.apply_top_layers(x)
+    elif model_architecture == "efficientnetv2":
+        x = efficientnetv2.apply_top_layers(x)
 
     outputs = Dense(1, activation="relu")(x)
     model = Model(inputs, outputs)
