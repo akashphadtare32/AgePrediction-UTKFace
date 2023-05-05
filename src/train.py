@@ -41,6 +41,7 @@ def main(cfg: DictConfig) -> None:
         data_path=cfg.dataset.path,
         target_size=cfg.train.target_size,
     )
+
     # TODO: Run cross validation on the small utk face dataset
     # train_ds, test_ds = train_test_split(ds, split=0.8)
     train_ds, val_ds = train_test_split(ds, split=0.8)
@@ -58,16 +59,15 @@ def main(cfg: DictConfig) -> None:
         shuffle=True,
         augment=cfg.augment.active,
         data_augmentation_pipeline=data_augmentation_pipeline,
+        cache=cfg.train.cache_dataset,
     )
     val_ds = prepare_for_training(
         val_ds,
         batch_size=cfg.train.batch_size,
         shuffle=False,
         augment=False,
+        cache=cfg.train.cache_dataset,
     )
-    if cfg.train.cache_dataset:
-        train_ds = train_ds.cache()
-        val_ds = val_ds.cache()
     # test_ds = prepare_for_training(
     #     test_ds,
     #     batch_size=cfg.train.batch_size,
@@ -78,7 +78,7 @@ def main(cfg: DictConfig) -> None:
     callbacks = get_callbacks(val_ds, **cfg.callbacks)
 
     model = build_model_from_cfg(cfg, first_stage=True)
-    print(model.summary())
+    print(model.summary(expand_nested=True))
     model.fit(
         train_ds,
         epochs=cfg.train.epochs,
@@ -91,7 +91,7 @@ def main(cfg: DictConfig) -> None:
         # second round of fine-tuning
         model = build_model_from_cfg(cfg, model=model, first_stage=False)
         model.trainable = True
-        print(model.summary(expand_nested=True))
+        print(model.summary(expand_nested=False))
         callbacks = get_callbacks(val_ds, initial_epoch=wandb.run.step, **cfg.callbacks)
         model.fit(
             train_ds,

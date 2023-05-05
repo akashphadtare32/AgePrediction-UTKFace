@@ -22,6 +22,7 @@ def prepare_for_training(
     shuffle=False,
     augment=False,
     data_augmentation_pipeline: tf.keras.Sequential = None,
+    cache=False,
 ) -> tf.data.Dataset:
     """Prepare a dataset for training.
 
@@ -37,8 +38,14 @@ def prepare_for_training(
         Whether to apply data augmentation to the images.
     data_augmentation_pipeline: tf.keras.Sequential
         The data augmentation pipeline to apply to the images.
+    cache : bool, default=False
+        Whether to cache the dataset in memory.
     """
     AUTOTUNE = tf.data.AUTOTUNE
+
+    if cache:
+        # before batching and augmenting (due to randomness)
+        ds = ds.cache()
 
     if shuffle:
         ds = ds.shuffle(1000)
