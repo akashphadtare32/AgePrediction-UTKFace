@@ -21,31 +21,24 @@ from src.utils import save_and_upload_model
 logger = logging.getLogger(__name__)
 
 
-@hydra.main(version_base="1.3", config_path="conf", config_name="config")
-def main(cfg: DictConfig) -> None:
-    """Train the model.
+def train(train_ds, val_ds, cfg):
+    """Train the model on the given train and validation datasets.
 
     Parameters
     ----------
+    train_ds : tf.data.Dataset
+        Training dataset. Note that this dataset should be shuffled,
+        but not prepared for training (no batching etc).
+    val_ds : tf.data.Dataset
+        Validation dataset.
     cfg : DictConfig
         Configuration object.
+
+    Returns
+    -------
+    tf.keras.Model
+        The trained model.
     """
-    tf.random.set_seed(cfg.train.seed)
-    np.random.seed(cfg.train.seed)
-    wandb.init(
-        **cfg.wandb,
-        config=OmegaConf.to_container(cfg, resolve=True),
-    )
-    ds = get_dataset(
-        name=cfg.dataset.name,
-        data_path=cfg.dataset.path,
-        target_size=cfg.train.target_size,
-    )
-
-    # TODO: Run cross validation on the small utk face dataset
-    # train_ds, test_ds = train_test_split(ds, split=0.8)
-    train_ds, val_ds = train_test_split(ds, split=0.8)
-
     if cfg.augment.active:
         data_augmentation_pipeline = get_data_augmentation_pipeline(
             **cfg.augment.factors
@@ -68,12 +61,6 @@ def main(cfg: DictConfig) -> None:
         augment=False,
         cache=cfg.train.cache_dataset,
     )
-    # test_ds = prepare_for_training(
-    #     test_ds,
-    #     batch_size=cfg.train.batch_size,
-    #     shuffle=False,
-    #     augment=False,
-    # )
 
     callbacks = get_callbacks(val_ds, **cfg.callbacks)
 
@@ -102,8 +89,39 @@ def main(cfg: DictConfig) -> None:
             use_multiprocessing=True,
             workers=multiprocessing.cpu_count(),
         )
-    # wandb.log({"test_loss": model.evaluate(test_ds)[0]})
+    return model
 
+
+@hydra.main(version_base="1.3", config_path="conf", config_name="config")
+def main(cfg: DictConfig) -> None:
+    """Train the model.
+
+    Parameters
+    ----------
+    cfg : DictConfig
+        Configuration object.
+    """
+    if cfg.train.seed is not None:
+        tf.random.set_seed(cfg.train.seed)
+        np.random.seed(cfg.train.seed)
+
+    wandb.init(
+        **cfg.wandb,
+        config=OmegaConf.to_container(cfg, resolve=True),
+    )
+    ds = get_dataset(
+        name=cfg.dataset.name,
+        data_path=cfg.dataset.path,
+        target_size=cfg.train.target_size,
+    )
+
+    # TODO: Run cross validation on the small utk face dataset
+    # train_ds, test_ds = train_test_split(ds, split=0.8)
+    train_ds, val_ds = train_test_split(ds, split=0.8)
+
+    model = train(train_ds, val_ds, cfg)
+
+    # save the model
     if not cfg.callbacks.model_ckpt:
         if cfg.wandb.mode == "online":
             model_name = f"run_{wandb.run.id}_model"
