@@ -6,6 +6,7 @@ import hydra
 import numpy as np
 import tensorflow as tf
 from omegaconf import DictConfig, OmegaConf
+from sklearn import model_selection
 
 import wandb
 from src.callbacks import get_callbacks
@@ -13,7 +14,11 @@ from src.dataset import (
     get_data_augmentation_pipeline,
     get_dataset,
     prepare_for_training,
-    train_test_split,
+)
+from src.datasets.utils import (
+    get_dataset_filepaths,
+    get_dataset_labels_from_filepaths,
+    get_label_function_for,
 )
 from src.model import build_model_from_cfg
 from src.utils import save_and_upload_model
@@ -109,17 +114,72 @@ def main(cfg: DictConfig) -> None:
         **cfg.wandb,
         config=OmegaConf.to_container(cfg, resolve=True),
     )
-    ds = get_dataset(
+
+    filepaths = get_dataset_filepaths(cfg.dataset.path)
+    get_label_func = get_label_function_for(cfg.dataset.name)
+    labels = get_dataset_labels_from_filepaths(filepaths, get_label_func)
+
+    (
+        train_filepaths,
+        train_labels,
+        test_filepaths,
+        test_labels,
+    ) = model_selection.train_test_split(
+        filepaths,
+        labels,
+        test_size=0.2,
+        random_state=cfg.train.seed,
+        shuffle=True,
+        stratify=labels,
+    )
+    test_ds = get_dataset(
         name=cfg.dataset.name,
-        data_path=cfg.dataset.path,
+        filepaths=test_filepaths,
         target_size=cfg.train.target_size,
     )
+    test_ds = prepare_for_training(
+        test_ds,
+        batch_size=cfg.train.batch_size,
+        shuffle=False,
+        augment=False,
+        cache=cfg.train.cache_dataset,
+    )
 
-    # TODO: Run cross validation on the small utk face dataset
-    # train_ds, test_ds = train_test_split(ds, split=0.8)
-    train_ds, val_ds = train_test_split(ds, split=0.8)
+    # perform Stratified K-Fold cross-validation
+    cv = model_selection.StratifiedKFold(
+        n_splits=cfg.train.n_splits, shuffle=True, random_state=cfg.train.seed
+    )
+    results = []
+    models = []
+    for i, (train_idx, val_idx) in enumerate(cv.split(train_filepaths)):
+        print(f"Fitting model on Fold {i + 1}")
+        train_ds = get_dataset(
+            name=cfg.dataset.name,
+            filepaths=train_filepaths[train_idx],
+            target_size=cfg.train.target_size,
+        )
+        val_ds = get_dataset(
+            name=cfg.dataset.name,
+            filepaths=train_filepaths[val_idx],
+            target_size=cfg.train.target_size,
+        )
 
-    model = train(train_ds, val_ds, cfg)
+        model = train(train_ds, val_ds, cfg)
+        results.append(model.evaluate(val_ds))
+        models.append(model)
+
+    print(f"Average Validation MAE: {np.mean(results)}")
+    print(f"Validation MAE Std: {np.std(results)}")
+    test_results = [model.evaluate(test_ds) for model in models]
+
+    wandb.run.summary(
+        {
+            "avg_val_mae": np.mean(results),
+            "val_mae_std": np.std(results),
+            "avg_test_mae": np.mean(test_results),
+            "test_mae_std": np.std(test_results),
+        }
+    )
 
     # save the model
     if not cfg.callbacks.model_ckpt:

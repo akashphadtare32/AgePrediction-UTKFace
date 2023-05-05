@@ -107,14 +107,14 @@ def get_data_augmentation_pipeline(
 
 def get_dataset(
     name: str,
-    data_path: str,
+    filepaths: list[str],
     target_size: Sequence[int] = (200, 200),
 ) -> tf.data.Dataset:
     """Get the datasets."""
     name = name.lower()
     if name == "utkface":
-        return get_utkface_dataset(data_path=data_path, target_size=target_size)
+        return get_utkface_dataset(filepaths=filepaths, target_size=target_size)
     elif name == "b3fd":
-        return get_b3fd_dataset(data_path=data_path, target_size=target_size)
+        return get_b3fd_dataset(filepaths=filepaths, target_size=target_size)
     else:
         raise ValueError(f"Invalid dataset name given: {name}")

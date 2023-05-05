@@ -1,7 +1,58 @@
 """Utilities for datasets."""
 
+import glob
+import os
 
+import numpy as np
 import tensorflow as tf
+
+import src.datasets.b3fd as b3fd
+import src.datasets.utkface as utkface
+
+
+def get_label_function_for(dataset_name: str):
+    """Return the label function for the given dataset."""
+    dataset_name = dataset_name.lower()
+    if dataset_name == "utkface":
+        return utkface.get_label
+    elif dataset_name == "b3fd":
+        return b3fd.get_label
+    else:
+        raise ValueError(f"Invalid dataset name given: {dataset_name}")
+
+
+def get_dataset_labels_from_filepaths(filepaths, get_label):
+    """Return the labels of the given filepaths.
+
+    Parameters
+    ----------
+    filepaths : np.ndarray
+        The filepaths of the images.
+    get_label : Callable
+        A function that returns the label of the image given the filepath.
+
+    Returns
+    -------
+    np.ndarray
+        The labels of the images.
+    """
+    return np.array([int(get_label(filepath)) for filepath in filepaths])
+
+
+def get_dataset_filepaths(path) -> np.ndarray:
+    """Return the filepaths of the images in the given directory.
+
+    Parameters
+    ----------
+    path : str
+        The path to the directory containing the images.
+
+    Returns
+    -------
+    np.ndarray
+        The filepaths of the images.
+    """
+    return np.array(glob.glob(os.path.join(path, "*.jpg")))
 
 
 def decode_image(raw_img, target_size, channels=3):
