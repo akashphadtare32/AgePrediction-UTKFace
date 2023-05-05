@@ -6,20 +6,6 @@ import os
 import numpy as np
 import tensorflow as tf
 
-import src.datasets.b3fd as b3fd
-import src.datasets.utkface as utkface
-
-
-def get_label_function_for(dataset_name: str):
-    """Return the label function for the given dataset."""
-    dataset_name = dataset_name.lower()
-    if dataset_name == "utkface":
-        return utkface.get_label
-    elif dataset_name == "b3fd":
-        return b3fd.get_label
-    else:
-        raise ValueError(f"Invalid dataset name given: {dataset_name}")
-
 
 def get_dataset_labels_from_filepaths(filepaths, get_label):
     """Return the labels of the given filepaths.

@@ -12,6 +12,8 @@ from tensorflow.keras.layers import (
 )
 
 from src.datasets import get_b3fd_dataset, get_utkface_dataset
+from src.datasets.b3fd import get_label as get_b3fd_label
+from src.datasets.utkface import get_label as get_utkface_label
 
 logger = logging.getLogger(__name__)
 
@@ -118,3 +120,14 @@ def get_dataset(
         return get_b3fd_dataset(filepaths=filepaths, target_size=target_size)
     else:
         raise ValueError(f"Invalid dataset name given: {name}")
+
+
+def get_label_function_for(dataset_name: str):
+    """Return the label function for the given dataset."""
+    dataset_name = dataset_name.lower()
+    if dataset_name == "utkface":
+        return get_utkface_label
+    elif dataset_name == "b3fd":
+        return get_b3fd_label
+    else:
+        raise ValueError(f"Invalid dataset name given: {dataset_name}")

@@ -13,13 +13,10 @@ from src.callbacks import get_callbacks
 from src.dataset import (
     get_data_augmentation_pipeline,
     get_dataset,
+    get_label_function_for,
     prepare_for_training,
 )
-from src.datasets.utils import (
-    get_dataset_filepaths,
-    get_dataset_labels_from_filepaths,
-    get_label_function_for,
-)
+from src.datasets.utils import get_dataset_filepaths, get_dataset_labels_from_filepaths
 from src.model import build_model_from_cfg
 from src.utils import save_and_upload_model
 
