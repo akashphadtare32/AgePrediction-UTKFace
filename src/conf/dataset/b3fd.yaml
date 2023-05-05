@@ -1,6 +1,5 @@
-name: UTKFace
+name: B3FD
 path: ${data_dir}/B3FD/
-metadata: ${data_dir}/B3FD_metadata/B3FD_age.csv
 img_size:
   - 256
   - 256

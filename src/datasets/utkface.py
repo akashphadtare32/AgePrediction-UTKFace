@@ -12,8 +12,8 @@ logger = logging.getLogger(__name__)
 
 def get_label(file_path):
     """Get the label for the image."""
-    parts = tf.strings.split(file_path, os.path.sep)[-1]
-    label = tf.strings.split(parts, "_")[0]
+    filename = tf.strings.split(file_path, os.path.sep)[-1]
+    label = tf.strings.split(filename, "_")[0]
     label = tf.strings.to_number(label, out_type=tf.dtypes.int32)
     return label
 
