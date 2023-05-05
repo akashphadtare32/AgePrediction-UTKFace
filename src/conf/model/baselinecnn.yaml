@@ -1,5 +1,5 @@
 architecture: BaselineCNN
-version: v1 # Tiny, Base, Small, Large, XLarge
+version: v2
 name: ${model.architecture}${model.version}
 freeze_base: false
 finetune_whole_model: false

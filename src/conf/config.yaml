@@ -30,7 +30,7 @@ wandb:
   project: UTKFace-Age-Regression
   group: ${model.architecture}
   name: null
-  mode: online # or online
+  mode: online # or offline
   id: null
   resume: allow
   tags:
@@ -44,7 +44,7 @@ callbacks:
     use_wandb: true
     model_ckpt: false
     ckpt_filepath: ${ckpt_dir}/model-{epoch:02d}-{val_mae:.2f}
-    visualize_predictions: true
+    visualize_predictions: false
     with_wandb_ckpt: false
 
 data_dir: data
