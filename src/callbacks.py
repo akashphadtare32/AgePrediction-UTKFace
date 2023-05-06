@@ -46,7 +46,10 @@ def get_callbacks(
     """
     callbacks = [
         tf.keras.callbacks.EarlyStopping(
-            patience=early_stopping_patience, monitor=monitor
+            patience=early_stopping_patience,
+            monitor=monitor,
+            restore_best_weights=True,
+            verbose=1,
         ),
     ]
     if use_wandb:
