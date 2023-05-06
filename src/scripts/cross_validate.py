@@ -83,4 +83,4 @@ def cross_validate(train_filepaths, test_ds, cfg):
     wandb.run.summary["avg_val_mae"] = np.mean(results)
     wandb.run.summary["val_mae_std"] = np.std(results)
 
-    return models
+    return models, test_ds

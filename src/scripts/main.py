@@ -63,7 +63,7 @@ def main(cfg: DictConfig) -> None:
         predictions = model.predict(test_ds)
         predictions = np.squeeze(predictions)
     elif cfg.train.cv_folds > 1:
-        models = cross_validate(train_filepaths, test_ds, cfg)
+        models, test_ds = cross_validate(train_filepaths, test_ds, cfg)
         predictions = make_ensemble_prediction(test_ds, models)
     else:
         raise ValueError(
