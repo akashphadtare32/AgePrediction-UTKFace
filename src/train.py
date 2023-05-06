@@ -159,18 +159,19 @@ def main(cfg: DictConfig) -> None:
         )
 
         model, train_ds, val_ds = train(train_ds, val_ds, cfg)
-        results.append(model.evaluate(val_ds))
+        _, val_mae = model.evaluate(val_ds)
+        results.append(val_mae)
         models.append(model)
         print(f"Validation MAE: {results[-1]}")
         # save the model
         if not cfg.callbacks.model_ckpt:
             if cfg.wandb.mode == "online":
                 model_name = f"run_{wandb.run.id}_model"
-                model_dir = f"{cfg.model_dir}/{wandb.run.id}/fold{i}"
+                model_dir = f"{cfg.model_dir}/{wandb.run.id}/fold{i + 1}"
                 upload = True
             else:
                 model_name = "model-best"
-                model_dir = cfg.model_dir + "/" + model_name + f"_fold{i}"
+                model_dir = cfg.model_dir + "/" + model_name + f"_fold{i + 1}"
                 upload = False
             save_and_upload_model(model, model_dir, model_name, upload=upload)
         print(80 * "-")
@@ -178,7 +179,7 @@ def main(cfg: DictConfig) -> None:
     print(80 * "=")
     print(f"Average Validation MAE: {np.mean(results)}")
     print(f"Validation MAE Std: {np.std(results)}")
-    test_results = [model.evaluate(test_ds) for model in models]
+    test_results = [model.evaluate(test_ds)[1] for model in models]
 
     wandb.run.summary["avg_val_mae"] = np.mean(results)
     wandb.run.summary["val_mae_std"] = np.std(results)
