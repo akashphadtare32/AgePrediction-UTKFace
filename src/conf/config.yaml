@@ -17,7 +17,7 @@ train:
     - 64
     - 64
   cache_dataset: true
-  cv_folds: 1
+  cv_folds: null
   test_size: 0.2
 
 augment:

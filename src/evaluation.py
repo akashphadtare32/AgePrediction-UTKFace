@@ -10,13 +10,14 @@ def compare_age_distribution(y_true, y_pred):
     fig = plt.figure(figsize=(10, 5))
     sns.kdeplot(y_true, label="Ground Truth")
     sns.kdeplot(y_pred, label="Predictions")
+    plt.legend()
     plt.xlabel("Age")
     return fig
 
 
 def compare_empirical_cdf(y_true, y_pred):
     """Plot the empirical CDF of the predicted vs. the true ages."""
-    fig = plt.subplots(figsize=(10, 5))
+    fig = plt.figure(figsize=(10, 5))
     sns.ecdfplot(y_true, label="Ground Truth")
     sns.ecdfplot(y_pred, label="Predictions")
     plt.legend()

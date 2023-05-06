@@ -12,7 +12,9 @@ from sklearn import model_selection
 import wandb
 from src.dataset import get_dataset
 from src.datasets.utils import get_dataset_filepaths
+from src.ensemble import make_ensemble_prediction
 from src.scripts.cross_validate import cross_validate
+from src.scripts.evaluate import evaluate
 from src.scripts.train import train
 from src.utils import save_and_upload_model
 
@@ -48,7 +50,6 @@ def main(cfg: DictConfig) -> None:
     if cfg.train.cv_folds is None:
         train_ds = get_dataset(cfg.dataset.name, train_filepaths, cfg.train.target_size)
         model, train_ds, test_ds = train(train_ds, test_ds, cfg)
-        models = [model]
         if not cfg.callbacks.model_ckpt:
             if cfg.wandb.mode == "online":
                 model_name = f"run_{wandb.run.id}_model"
@@ -59,15 +60,17 @@ def main(cfg: DictConfig) -> None:
                 model_dir = cfg.model_dir + "/" + model_name
                 upload = False
             save_and_upload_model(model, model_dir, model_name, upload=upload)
+        predictions = model.predict(test_ds)
+        predictions = np.squeeze(predictions)
     elif cfg.train.cv_folds > 1:
         models = cross_validate(train_filepaths, test_ds, cfg)
+        predictions = make_ensemble_prediction(test_ds, models)
     else:
         raise ValueError(
             f"Invalid value for cv_folds: {cfg.train.cv_folds}. "
             "Must be None or an integer greater than 1."
         )
-    print(len(models))
-    # evaluate(models, test_ds)
+    evaluate(predictions, test_ds)
     wandb.finish()
 
 
