@@ -17,6 +17,7 @@ train:
     - 64
     - 64
   cache_dataset: false
+  cv_folds: 1
 
 augment:
   active: true

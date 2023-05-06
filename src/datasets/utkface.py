@@ -15,15 +15,14 @@ def get_label(file_path):
     filename = tf.strings.split(file_path, os.path.sep)[-1]
     label = tf.strings.split(filename, "_")[0]
     label = tf.strings.to_number(label, out_type=tf.dtypes.int32)
+    # return tf.minimum(100, label)
     return label
 
 
-def get_utkface_dataset(
-    data_path: str, target_size: Sequence[int] = (200, 200), metadata_path: str = None
-):
+def get_utkface_dataset(filepaths: list[str], target_size: Sequence[int] = (200, 200)):
     """Get the UTKFace dataset."""
-    dataset = tf.data.Dataset.list_files(data_path + "*")
+    ds = tf.data.Dataset.from_tensor_slices(filepaths)
     process_path = get_process_path_function(get_label, target_size=target_size)
 
-    labeled_dataset = dataset.map(process_path, num_parallel_calls=tf.data.AUTOTUNE)
-    return labeled_dataset
+    ds = ds.map(process_path, num_parallel_calls=tf.data.AUTOTUNE)
+    return ds
