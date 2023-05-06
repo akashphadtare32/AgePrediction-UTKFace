@@ -2,6 +2,7 @@
 
 import matplotlib.pyplot as plt
 import seaborn as sns
+from scipy.stats import kstest
 
 
 def compare_age_distribution(y_true, y_pred):
@@ -25,9 +26,13 @@ def compare_empirical_cdf(y_true, y_pred):
 
 def evaluate_age_distribution(y_true, y_pred):
     """Evaluate the distribution of ages in the predicted vs. the true ages."""
-    pass
+    results = kstest(y_true, y_pred)
+    return results
 
 
 def plot_residuals(y_true, y_pred):
     """Plot the residuals of the predicted vs. the true ages."""
-    pass
+    residuals = y_true - y_pred
+    fig = plt.figure(figsize=(10, 5))
+    sns.scatterplot(x=y_true, y=residuals)
+    return fig
