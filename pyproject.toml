@@ -25,7 +25,7 @@ matplotlib = "^3.7.1"
 wandb = "^0.15.0"
 scikit-learn = "^1.2.2"
 seaborn = "^0.12.2"
-protobuf = "<3.20"
+protobuf = "<3.21"
 
 [tool.poetry.scripts]
 train = 'src.train:main'

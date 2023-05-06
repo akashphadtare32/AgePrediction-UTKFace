@@ -42,6 +42,7 @@ prepare_paperspace:
 	git pull
 	pip install -r paperspace_reqs.txt
 	pip install .
+	pip install "protobuf<3.20"
 
 ## Delete all compiled Python files
 clean:
