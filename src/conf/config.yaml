@@ -7,7 +7,7 @@ defaults:
 
 train:
   task: regression
-  loss: mean_absolute_error
+  loss: mean_squared_error
   metrics:
     - mae
   epochs: 150
