@@ -90,7 +90,7 @@ def train(train_ds, val_ds, cfg):
             use_multiprocessing=True,
             workers=multiprocessing.cpu_count(),
         )
-    return model
+    return model, train_ds, val_ds
 
 
 @hydra.main(version_base="1.3", config_path="conf", config_name="config")
@@ -110,7 +110,6 @@ def main(cfg: DictConfig) -> None:
         **cfg.wandb,
         config=OmegaConf.to_container(cfg, resolve=True),
     )
-    print("Preparing KFold Cross-Validation...")
     filepaths = get_dataset_filepaths(cfg.dataset.path)
     # get_label_func = get_label_function_for(cfg.dataset.name)
     # labels = get_dataset_labels_from_filepaths(filepaths, get_label_func)
@@ -159,7 +158,7 @@ def main(cfg: DictConfig) -> None:
             target_size=cfg.train.target_size,
         )
 
-        model = train(train_ds, val_ds, cfg)
+        model, train_ds, val_ds = train(train_ds, val_ds, cfg)
         results.append(model.evaluate(val_ds))
         models.append(model)
         print(f"Validation MAE: {results[-1]}")

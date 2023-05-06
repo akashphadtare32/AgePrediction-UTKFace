@@ -16,7 +16,7 @@ train:
   target_size:
     - 64
     - 64
-  cache_dataset: false
+  cache_dataset: true
   cv_folds: 1
 
 augment:
