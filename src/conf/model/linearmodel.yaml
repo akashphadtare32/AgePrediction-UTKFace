@@ -1,0 +1,14 @@
+architecture: LinearModel
+version: v1
+name: ${model.architecture}${model.version}
+freeze_base: false
+finetune_whole_model: false
+preprocessing:
+  _target_: src.custom_models.baseline_cnn.preprocess_input
+  _partial_: true
+instantiate:
+  _target_: src.custom_models.linear_model.get_base_model
+  input_shape:
+    - ${train.target_size[0]}
+    - ${train.target_size[1]}
+    - ${dataset.channels}
