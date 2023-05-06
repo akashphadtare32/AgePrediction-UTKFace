@@ -7,6 +7,7 @@ import numpy as np
 import tensorflow as tf
 from omegaconf import DictConfig, OmegaConf
 from sklearn import model_selection
+from sklearn.metrics import mean_absolute_error
 
 import wandb
 from src.callbacks import get_callbacks
@@ -16,6 +17,7 @@ from src.dataset import (
     prepare_for_training,
 )
 from src.datasets.utils import get_dataset_filepaths
+from src.ensemble import make_ensemble_prediction
 from src.model import build_model_from_cfg
 from src.utils import save_and_upload_model
 
@@ -179,12 +181,15 @@ def main(cfg: DictConfig) -> None:
     print(80 * "=")
     print(f"Average Validation MAE: {np.mean(results)}")
     print(f"Validation MAE Std: {np.std(results)}")
-    test_results = [model.evaluate(test_ds)[1] for model in models]
+
+    y_pred = make_ensemble_prediction(test_ds, models)
+    y_true = [y for _, y in test_ds.unbatch().as_numpy_iterator()]
+    test_mae = mean_absolute_error(y_true, y_pred)
+    print(f"Test MAE (ensemble prediction): {test_mae}")
 
     wandb.run.summary["avg_val_mae"] = np.mean(results)
     wandb.run.summary["val_mae_std"] = np.std(results)
-    wandb.run.summary["avg_test_mae"] = np.mean(test_results)
-    wandb.run.summary["test_mae_std"] = np.std(test_results)
+    wandb.run.summary["test_mae"] = np.mean(test_mae)
     wandb.finish()
 
 
