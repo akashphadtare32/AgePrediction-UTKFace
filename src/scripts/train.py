@@ -2,7 +2,6 @@
 import logging
 import multiprocessing
 
-import wandb
 from src.callbacks import get_callbacks
 from src.dataset import get_data_augmentation_pipeline, prepare_for_training
 from src.model import build_model_from_cfg
@@ -55,7 +54,7 @@ def train(train_ds, val_ds, cfg):
 
     model = build_model_from_cfg(cfg, first_stage=True)
     print(model.summary(expand_nested=True))
-    model.fit(
+    history = model.fit(
         train_ds,
         epochs=cfg.train.epochs,
         validation_data=val_ds,
@@ -68,11 +67,12 @@ def train(train_ds, val_ds, cfg):
         model = build_model_from_cfg(cfg, model=model, first_stage=False)
         model.trainable = True
         print(model.summary(expand_nested=False))
-        callbacks = get_callbacks(val_ds, initial_epoch=wandb.run.step, **cfg.callbacks)
+        initial_epoch = len(history.history["loss"])
+        callbacks = get_callbacks(val_ds, initial_epoch=initial_epoch, **cfg.callbacks)
         model.fit(
             train_ds,
             epochs=cfg.train.epochs,
-            initial_epoch=wandb.run.step,
+            initial_epoch=initial_epoch,
             validation_data=val_ds,
             callbacks=callbacks,
             use_multiprocessing=True,

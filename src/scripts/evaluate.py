@@ -1,7 +1,6 @@
 """Script to evaluate the predictions on the test set."""
 
 
-import numpy as np
 from sklearn.metrics import mean_absolute_error
 
 import wandb
@@ -20,7 +19,7 @@ def evaluate(predictions, test_ds):
     # Evaluate the model on the test set.
     test_mae = mean_absolute_error(y_true, predictions)
     print(f"Test MAE (ensemble prediction): {test_mae}")
-    wandb.run.summary["test_mae"] = np.mean(test_mae)
+    wandb.run.summary["test_mae"] = test_mae
 
     age_dist = compare_age_distribution_plotly(y_true, predictions)
 
