@@ -180,14 +180,10 @@ def main(cfg: DictConfig) -> None:
     print(f"Validation MAE Std: {np.std(results)}")
     test_results = [model.evaluate(test_ds) for model in models]
 
-    wandb.run.summary(
-        {
-            "avg_val_mae": np.mean(results),
-            "val_mae_std": np.std(results),
-            "avg_test_mae": np.mean(test_results),
-            "test_mae_std": np.std(test_results),
-        }
-    )
+    wandb.run.summary["avg_val_mae"] = np.mean(results)
+    wandb.run.summary["val_mae_std"] = np.std(results)
+    wandb.run.summary["avg_test_mae"] = np.mean(test_results)
+    wandb.run.summary["test_mae_std"] = np.std(test_results)
     wandb.finish()
 
 
