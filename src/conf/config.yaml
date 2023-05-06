@@ -18,6 +18,7 @@ train:
     - 64
   cache_dataset: true
   cv_folds: 1
+  test_size: 0.2
 
 augment:
   active: true

@@ -28,7 +28,7 @@ seaborn = "^0.12.2"
 protobuf = "<3.21"
 
 [tool.poetry.scripts]
-train = 'src.train:main'
+train = 'src.scripts.main:main'
 
 
 [tool.poetry.group.dev.dependencies]
