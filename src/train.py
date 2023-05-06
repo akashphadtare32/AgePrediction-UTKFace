@@ -13,10 +13,9 @@ from src.callbacks import get_callbacks
 from src.dataset import (
     get_data_augmentation_pipeline,
     get_dataset,
-    get_label_function_for,
     prepare_for_training,
 )
-from src.datasets.utils import get_dataset_filepaths, get_dataset_labels_from_filepaths
+from src.datasets.utils import get_dataset_filepaths
 from src.model import build_model_from_cfg
 from src.utils import save_and_upload_model
 
@@ -96,7 +95,7 @@ def train(train_ds, val_ds, cfg):
 
 @hydra.main(version_base="1.3", config_path="conf", config_name="config")
 def main(cfg: DictConfig) -> None:
-    """Train the model.
+    """Train the model with K-Fold Cross Validation.
 
     Parameters
     ----------
@@ -111,23 +110,19 @@ def main(cfg: DictConfig) -> None:
         **cfg.wandb,
         config=OmegaConf.to_container(cfg, resolve=True),
     )
-
+    print("Preparing KFold Cross-Validation...")
     filepaths = get_dataset_filepaths(cfg.dataset.path)
-    get_label_func = get_label_function_for(cfg.dataset.name)
-    labels = get_dataset_labels_from_filepaths(filepaths, get_label_func)
+    # get_label_func = get_label_function_for(cfg.dataset.name)
+    # labels = get_dataset_labels_from_filepaths(filepaths, get_label_func)
 
     (
         train_filepaths,
-        train_labels,
         test_filepaths,
-        test_labels,
     ) = model_selection.train_test_split(
         filepaths,
-        labels,
-        test_size=0.2,
+        test_size=0.1,
         random_state=cfg.train.seed,
         shuffle=True,
-        stratify=labels,
     )
     test_ds = get_dataset(
         name=cfg.dataset.name,
@@ -143,13 +138,16 @@ def main(cfg: DictConfig) -> None:
     )
 
     # perform Stratified K-Fold cross-validation
-    cv = model_selection.StratifiedKFold(
-        n_splits=cfg.train.n_splits, shuffle=True, random_state=cfg.train.seed
+    cv = model_selection.KFold(
+        n_splits=cfg.train.cv_folds, shuffle=True, random_state=cfg.train.seed
     )
     results = []
     models = []
+    print(f"Starting {cfg.train.cv_folds}-Fold Cross-Validation...")
+    print(80 * "=")
     for i, (train_idx, val_idx) in enumerate(cv.split(train_filepaths)):
         print(f"Fitting model on Fold {i + 1}")
+        print(80 * "-")
         train_ds = get_dataset(
             name=cfg.dataset.name,
             filepaths=train_filepaths[train_idx],
@@ -164,7 +162,21 @@ def main(cfg: DictConfig) -> None:
         model = train(train_ds, val_ds, cfg)
         results.append(model.evaluate(val_ds))
         models.append(model)
+        print(f"Validation MAE: {results[-1]}")
+        # save the model
+        if not cfg.callbacks.model_ckpt:
+            if cfg.wandb.mode == "online":
+                model_name = f"run_{wandb.run.id}_model"
+                model_dir = f"{cfg.model_dir}/{wandb.run.id}/fold{i}"
+                upload = True
+            else:
+                model_name = "model-best"
+                model_dir = cfg.model_dir + "/" + model_name + f"_fold{i}"
+                upload = False
+            save_and_upload_model(model, model_dir, model_name, upload=upload)
+        print(80 * "-")
 
+    print(80 * "=")
     print(f"Average Validation MAE: {np.mean(results)}")
     print(f"Validation MAE Std: {np.std(results)}")
     test_results = [model.evaluate(test_ds) for model in models]
@@ -177,18 +189,6 @@ def main(cfg: DictConfig) -> None:
             "test_mae_std": np.std(test_results),
         }
     )
-
-    # save the model
-    if not cfg.callbacks.model_ckpt:
-        if cfg.wandb.mode == "online":
-            model_name = f"run_{wandb.run.id}_model"
-            model_dir = cfg.model_dir + "/" + wandb.run.id
-            upload = True
-        else:
-            model_name = "model-best"
-            model_dir = cfg.model_dir + "/" + model_name
-            upload = False
-        save_and_upload_model(model, model_dir, model_name, upload=upload)
     wandb.finish()
 
 
