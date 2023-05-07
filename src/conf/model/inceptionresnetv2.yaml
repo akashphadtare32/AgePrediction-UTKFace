@@ -1,0 +1,17 @@
+architecture: InceptionResNetV2
+version: "" # nothing else allowed
+name: ${model.architecture}
+freeze_base: true
+finetune_whole_model: true
+preprocessing:
+  _target_: tensorflow.keras.applications.inception_resnet_v2.preprocess_input
+  _partial_: true
+instantiate:
+  _target_: tensorflow.keras.applications.${model.architecture}
+  include_top: false
+  weights: imagenet
+  input_shape:
+    - ${train.target_size[0]}
+    - ${train.target_size[1]}
+    - ${dataset.channels}
+  pooling: avg

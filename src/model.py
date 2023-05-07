@@ -5,7 +5,7 @@ from omegaconf import DictConfig
 from tensorflow.keras import Input, Model
 from tensorflow.keras.layers import Dense
 
-from src.custom_models import convnext, efficientnetv2, resnet, vgg
+from src.custom_models import convnext, efficientnetv2, inceptionresnetv2, resnet, vgg
 
 
 def instantiate_base_model(model_instantiate_cfg: DictConfig) -> tf.keras.Model:
@@ -50,6 +50,9 @@ def get_complete_model(
     x = base_model(x, training=False)
 
     # determine the top layers based on the architecture
+    # TODO: rewrite this. Maybe use only one top layer function, or several of them
+    # that are not related to the base model architecture. Then the base model acts only
+    # as a feature extractor.
     model_architecture = model_cfg.architecture.lower()
     if model_architecture == "vgg":
         x = vgg.apply_top_layers(x)
@@ -59,6 +62,8 @@ def get_complete_model(
         x = convnext.apply_top_layers(x)
     elif model_architecture == "efficientnetv2":
         x = efficientnetv2.apply_top_layers(x)
+    elif model_architecture == "inceptionresnetv2":
+        x = inceptionresnetv2.apply_top_layers(x)
 
     outputs = Dense(1, activation="relu")(x)
     model = Model(inputs, outputs)
