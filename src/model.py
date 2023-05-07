@@ -36,12 +36,14 @@ def get_complete_model(
     model_cfg: DictConfig, target_size=(200, 200), channels=3
 ) -> tf.keras.Model:
     """Get the complete model."""
+    model_architecture = model_cfg.architecture.lower()
     base_model = instantiate_base_model(model_cfg.instantiate)
 
     # if the model has a base model, then we freeze it
     # (e.g. VGG, ResNet, EfficientNetV2 ...)
     # for the baseline cnn, this is just the model itself
-    base_model.trainable = not model_cfg.freeze_base
+    if model_architecture != "vggface":  # TODO: how to handle this case?
+        base_model.trainable = not model_cfg.freeze_base
 
     preprocessing = instantiate_preprocessing(model_cfg.preprocessing)
     inputs = Input(shape=(*target_size, channels))
@@ -53,7 +55,6 @@ def get_complete_model(
     # TODO: rewrite this. Maybe use only one top layer function, or several of them
     # that are not related to the base model architecture. Then the base model acts only
     # as a feature extractor.
-    model_architecture = model_cfg.architecture.lower()
     if model_architecture == "vgg":
         x = vgg.apply_top_layers(x)
     elif model_architecture == "resnet":

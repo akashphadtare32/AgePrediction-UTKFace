@@ -1,0 +1,14 @@
+architecture: VGGFace
+version: null
+name: ${model.architecture}
+freeze_base: false
+finetune_whole_model: false
+preprocessing:
+  _target_: tensorflow.keras.applications.vgg16.preprocess_input
+  _partial_: true
+instantiate:
+  _target_: src.custom_models.vggface.get_base_model
+  input_shape:
+    - ${train.target_size[0]}
+    - ${train.target_size[1]}
+    - ${dataset.channels}
