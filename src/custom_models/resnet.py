@@ -1,8 +1,16 @@
 """Functions for the resnet model."""
 
+from tensorflow.keras import layers
+
 
 def apply_top_layers(x):
     """Apply the top layers of the resnet model."""
-    # resnet just applies a global average pooling,
-    # but this is already included when instantiating the base model
+    x = layers.Dense(512, activation="selu")(x)
+    x = layers.Dropout(0.5)(x)
+    x = layers.Dense(512, activation="selu")(x)
+    x = layers.Dropout(0.3)(x)
+    x = layers.Dense(256, activation="selu")(x)
+    x = layers.Dropout(0.3)(x)
+    x = layers.Dense(128, activation="selu")(x)
+    x = layers.Dropout(0.5)(x)
     return x
