@@ -17,6 +17,6 @@ instantiate:
     - ${dataset.channels}
   pooling: null
 
-  top_layer_architecture:
-    _target_: src.top_layer_architectures.resnet_top
-    _partial_: true
+top_layer_architecture:
+  _target_: src.top_layer_architectures.resnet_top
+  _partial_: true
