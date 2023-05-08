@@ -73,14 +73,14 @@ def load_vgg_face(input_shape=(224, 224, 3)):
 def get_base_model(input_shape):
     """Get the base model."""
     base_model = load_vgg_face(input_shape)
-    base_model.trainable = False
-    for layer in base_model.layers[-4:]:
-        layer.trainable = True
 
-    # TODO: move this to apply_top_layers func
-    x = Sequential()
-    x = Convolution2D(1024, (1, 1))(base_model.layers[-4].output)
-    x = Flatten()(x)
-    outputs = Dense(256, activation="relu")(x)
-    age_model = Model(inputs=base_model.input, outputs=outputs)
+    age_model = Model(inputs=base_model.input, outputs=base_model.layers[-2].output)
     return age_model
+
+
+def apply_top_layers(x):
+    """Apply top layers."""
+    x = Flatten()(x)
+    x = Dense(512, activation="relu")(x)
+    outputs = Dense(256, activation="relu")(x)
+    return outputs

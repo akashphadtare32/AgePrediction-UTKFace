@@ -62,10 +62,14 @@ def train(train_ds, val_ds, cfg):
         use_multiprocessing=True,
         workers=multiprocessing.cpu_count(),
     )
-    if cfg.model.finetune_whole_model:
-        # second round of fine-tuning
+    if cfg.model.finetune_base:
         model = build_model_from_cfg(cfg, model=model, first_stage=False)
-        model.trainable = True
+        if cfg.model.num_finetune_layers == "all":
+            model.trainable = True
+        else:
+            finetune_layers = cfg.model.num_finetune_layers
+            for layer in model.layers[-finetune_layers:]:
+                layer.trainable = True
         print(model.summary(expand_nested=False))
         initial_epoch = len(history.history["loss"])
         callbacks = get_callbacks(val_ds, initial_epoch=initial_epoch, **cfg.callbacks)

@@ -5,7 +5,14 @@ from omegaconf import DictConfig
 from tensorflow.keras import Input, Model
 from tensorflow.keras.layers import Dense
 
-from src.custom_models import convnext, efficientnetv2, inceptionresnetv2, resnet, vgg
+from src.custom_models import (
+    convnext,
+    efficientnetv2,
+    inceptionresnetv2,
+    resnet,
+    vgg,
+    vggface,
+)
 
 
 def instantiate_base_model(model_instantiate_cfg: DictConfig) -> tf.keras.Model:
@@ -42,8 +49,7 @@ def get_complete_model(
     # if the model has a base model, then we freeze it
     # (e.g. VGG, ResNet, EfficientNetV2 ...)
     # for the baseline cnn, this is just the model itself
-    if model_architecture != "vggface":  # TODO: how to handle this case?
-        base_model.trainable = not model_cfg.freeze_base
+    base_model.trainable = not model_cfg.freeze_base
 
     preprocessing = instantiate_preprocessing(model_cfg.preprocessing)
     inputs = Input(shape=(*target_size, channels))
@@ -57,6 +63,8 @@ def get_complete_model(
     # as a feature extractor.
     if model_architecture == "vgg":
         x = vgg.apply_top_layers(x)
+    elif model_architecture == "vggface":
+        x = vggface.apply_top_layers(x)
     elif model_architecture == "resnet":
         x = resnet.apply_top_layers(x)
     elif model_architecture == "convnext":

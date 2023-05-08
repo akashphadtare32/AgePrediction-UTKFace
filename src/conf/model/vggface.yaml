@@ -1,8 +1,9 @@
 architecture: VGGFace
 version: null
 name: ${model.architecture}
-freeze_base: false
-finetune_whole_model: false
+freeze_base: true
+finetune_base: true
+num_finetune_layers: 7
 preprocessing:
   _target_: tensorflow.keras.applications.vgg16.preprocess_input
   _partial_: true
