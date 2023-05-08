@@ -49,6 +49,19 @@ def test_instantiate_optimizer(defaults_config):
     assert optimizer.learning_rate == 1e-3
 
 
+def test_instantiate_adamw():
+    """Test the AdamW optimizer instantiation."""
+    with initialize(version_base="1.3", config_path="../src/conf"):
+        cfg = compose(config_name="config", overrides=["optimizer=AdamW"])
+    optim_partial = instantiate(cfg.optimizer)
+    assert optim_partial.__class__.__name__ == "partial"
+
+    # finish the instantiation
+    optimizer = optim_partial(1e-3)
+    assert optimizer.learning_rate == 1e-3
+    assert optimizer.decay == cfg.optimizer.decay
+
+
 def test_instantiate_lr_schedule(defaults_config):
     """Test the learning rate schedule instantiation."""
     # instantiate the lr_schedule
