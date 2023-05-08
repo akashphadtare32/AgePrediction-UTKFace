@@ -27,11 +27,15 @@ def fully_connected_with_dropout(x):
 
 def conv_with_fc_top(x):
     """Apply Convolutional top layers with one fully connected layer."""
-    x = Conv2D(128, (1, 1), activation="relu")(x)
-    x = Conv2D(256, (1, 1), activation="relu")(x)
-    x = Conv2D(512, (1, 1), activation="relu")(x)
+    x = Conv2D(128, (2, 2), activation="relu")(x)
+    x = Conv2D(256, (2, 2), activation="relu")(x)
+    x = Conv2D(512, (2, 2), activation="relu")(x)
     x = GlobalAveragePooling2D()(x)
     x = Dense(128, activation="relu")(x)
+    x = Dropout(0.5)(x)
+    x = Dense(64, activation="relu")(x)
+    x = Dropout(0.25)(x)
+    return x
 
 
 def vgg_top(x):
@@ -46,6 +50,7 @@ def vgg_top(x):
 
 def resnet_top(x):
     """Apply the top layers of the (inception) resnet model."""
+    x = GlobalAveragePooling2D()(x)
     x = Dense(512, activation="selu")(x)
     x = Dropout(0.5)(x)
     x = Dense(512, activation="selu")(x)

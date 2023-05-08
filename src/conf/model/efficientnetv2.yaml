@@ -18,5 +18,5 @@ instantiate:
   pooling: null
 
 top_layer_architecture:
-  _target_: src.top_layer_architectures.fully_connected_with_dropout
+  _target_: src.top_layer_architectures.conv_with_fc_top
   _partial_: true

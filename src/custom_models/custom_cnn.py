@@ -1,6 +1,6 @@
-"""A more sophisticated custom CNN model.
+"""A more sophisticated custom CNN model using SeparableConv and Spatial Dropout.
 
-From the paper `Age and Gender prediction using Deep CNNs
+Adapted from the paper `Age and Gender prediction using Deep CNNs
 and Transfer learning` by Sheoran et al.
 """
 
@@ -48,6 +48,7 @@ def get_base_model(input_shape):
             BatchNormalization(),
             MaxPooling2D(),
             Activation("relu"),
+            # ----
             Flatten(),
             Dense(128, activation="relu"),
             Dropout(0.4),
