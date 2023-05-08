@@ -5,15 +5,6 @@ from omegaconf import DictConfig
 from tensorflow.keras import Input, Model
 from tensorflow.keras.layers import Dense
 
-from src.custom_models import (
-    convnext,
-    efficientnetv2,
-    inceptionresnetv2,
-    resnet,
-    vgg,
-    vggface,
-)
-
 
 def instantiate_base_model(model_instantiate_cfg: DictConfig) -> tf.keras.Model:
     """Get the model."""
@@ -39,11 +30,16 @@ def instantiate_preprocessing(preprocessing: DictConfig):
         return instantiate(preprocessing)
 
 
+def instantiate_top_layers(top_layer_architecture: DictConfig):
+    """Instantiate the top layers."""
+    if top_layer_architecture is not None:
+        return instantiate(top_layer_architecture)
+
+
 def get_complete_model(
     model_cfg: DictConfig, target_size=(200, 200), channels=3
 ) -> tf.keras.Model:
     """Get the complete model."""
-    model_architecture = model_cfg.architecture.lower()
     base_model = instantiate_base_model(model_cfg.instantiate)
 
     # if the model has a base model, then we freeze it
@@ -57,22 +53,8 @@ def get_complete_model(
 
     x = base_model(x, training=False)
 
-    # determine the top layers based on the architecture
-    # TODO: rewrite this. Maybe use only one top layer function, or several of them
-    # that are not related to the base model architecture. Then the base model acts only
-    # as a feature extractor.
-    if model_architecture == "vgg":
-        x = vgg.apply_top_layers(x)
-    elif model_architecture == "vggface":
-        x = vggface.apply_top_layers(x)
-    elif model_architecture == "resnet":
-        x = resnet.apply_top_layers(x)
-    elif model_architecture == "convnext":
-        x = convnext.apply_top_layers(x)
-    elif model_architecture == "efficientnetv2":
-        x = efficientnetv2.apply_top_layers(x)
-    elif model_architecture == "inceptionresnetv2":
-        x = inceptionresnetv2.apply_top_layers(x)
+    apply_top_layers = instantiate_top_layers(model_cfg.top_layer_architecture)
+    x = apply_top_layers(x) if apply_top_layers is not None else x
 
     outputs = Dense(1, activation="relu")(x)
     model = Model(inputs, outputs)

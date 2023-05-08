@@ -15,4 +15,8 @@ instantiate:
     - ${train.target_size[0]}
     - ${train.target_size[1]}
     - ${dataset.channels}
-  pooling: avg
+  pooling: null
+
+  top_layer_architecture:
+    _target_: src.top_layer_architectures.resnet_top
+    _partial_: true

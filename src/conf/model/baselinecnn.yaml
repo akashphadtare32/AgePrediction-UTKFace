@@ -13,3 +13,4 @@ instantiate:
     - ${train.target_size[0]}
     - ${train.target_size[1]}
     - ${dataset.channels}
+top_layer_architecture: null

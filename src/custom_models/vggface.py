@@ -6,7 +6,6 @@ https://sefiks.com/2019/02/13/apparent-age-and-gender-prediction-in-keras/
 from keras.layers import (
     Activation,
     Convolution2D,
-    Dense,
     Dropout,
     Flatten,
     MaxPooling2D,
@@ -76,11 +75,3 @@ def get_base_model(input_shape):
 
     age_model = Model(inputs=base_model.input, outputs=base_model.layers[-2].output)
     return age_model
-
-
-def apply_top_layers(x):
-    """Apply top layers."""
-    x = Flatten()(x)
-    x = Dense(512, activation="relu")(x)
-    outputs = Dense(256, activation="relu")(x)
-    return outputs
