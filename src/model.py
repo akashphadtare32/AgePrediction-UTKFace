@@ -46,12 +46,16 @@ def get_complete_model(
     # (e.g. VGG, ResNet, EfficientNetV2 ...)
     # for the baseline cnn, this is just the model itself
     base_model.trainable = not model_cfg.freeze_base
+    # if we freeze the base, then we usually want to have training=False to prevent
+    # the BatchNormalization layers from updating their statistics when
+    # finetuning the base in stage 2 later on
+    training = not model_cfg.freeze_base
 
     preprocessing = instantiate_preprocessing(model_cfg.preprocessing)
     inputs = Input(shape=(*target_size, channels))
     x = preprocessing(inputs) if preprocessing is not None else inputs
 
-    x = base_model(x, training=False)
+    x = base_model(x, training=training)
 
     apply_top_layers = instantiate_top_layers(model_cfg.top_layer_architecture)
     x = apply_top_layers(x) if apply_top_layers is not None else x
