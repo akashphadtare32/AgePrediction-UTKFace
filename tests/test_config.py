@@ -52,7 +52,7 @@ def test_instantiate_optimizer(defaults_config):
 def test_instantiate_adamw():
     """Test the AdamW optimizer instantiation."""
     with initialize(version_base="1.3", config_path="../src/conf"):
-        cfg = compose(config_name="config", overrides=["optimizer=AdamW"])
+        cfg = compose(config_name="config", overrides=["optimizer=adamw"])
     optim_partial = instantiate(cfg.optimizer)
     assert optim_partial.__class__.__name__ == "partial"
 

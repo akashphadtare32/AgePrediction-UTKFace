@@ -1,3 +1,4 @@
+# Note: Only available for TensorFlow 2.12 or higher
 architecture: ConvNeXt
 version: Tiny # Tiny, Base, Small, Large, XLarge
 name: ${model.architecture}${model.version}
