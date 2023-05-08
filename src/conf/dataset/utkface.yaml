@@ -5,3 +5,4 @@ img_size:
   - 200
   - 200
 channels: 3
+cutoff_age: 100

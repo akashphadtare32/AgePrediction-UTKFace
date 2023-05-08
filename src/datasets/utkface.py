@@ -15,8 +15,7 @@ def get_label(file_path):
     filename = tf.strings.split(file_path, os.path.sep)[-1]
     label = tf.strings.split(filename, "_")[0]
     label = tf.strings.to_number(label, out_type=tf.dtypes.int32)
-    # return tf.minimum(100, label)
-    return label
+    return tf.minimum(100, label)
 
 
 def get_utkface_dataset(filepaths: list[str], target_size: Sequence[int] = (200, 200)):
