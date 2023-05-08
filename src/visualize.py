@@ -29,3 +29,15 @@ def visualize_augmented_image(
             plt.axis("off")
     plt.tight_layout()
     return fig
+
+
+def visualize_predictions(y_pred, ds):
+    """Visualize the predictions."""
+    fig = plt.figure(figsize=(8, 8))
+    for i, (image, label) in enumerate(ds.take(9)):
+        _ = plt.subplot(3, 3, i + 1)
+        plt.imshow(image.numpy().astype("int32"))
+        plt.title(f"True: {int(label)}\nPred: {int(y_pred[i])}")
+        plt.axis("off")
+    plt.tight_layout()
+    return fig

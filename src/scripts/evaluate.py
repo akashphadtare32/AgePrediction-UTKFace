@@ -10,6 +10,7 @@ from src.evaluation import (
     evaluate_age_distribution,
     plot_residuals_plotly,
 )
+from src.visualize import visualize_predictions
 
 
 def evaluate(predictions, test_ds):
@@ -30,10 +31,14 @@ def evaluate(predictions, test_ds):
 
     residual_plot = plot_residuals_plotly(y_true, predictions)
 
+    # some predictions
+    fig = visualize_predictions(predictions, test_ds.unbatch())
+
     wandb.log(
         {
             "age_distribution": age_dist,
             "empirical_cdfs": empirical_cdfs,
             "residuals": residual_plot,
+            "predictions": fig,
         }
     )
