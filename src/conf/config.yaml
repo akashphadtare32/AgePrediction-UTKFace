@@ -14,8 +14,8 @@ train:
   batch_size: 32
   seed: 0
   target_size:
-    - 64
-    - 64
+    - 150
+    - 150
   cache_dataset: true
   cv_folds: null
   test_size: 0.2
@@ -24,7 +24,7 @@ augment:
   active: true
   factors:
     random_rotation: 0.1
-    random_translation: 0.1
+    random_translation: null
     random_brightness: null
     random_flip: horizontal
 
