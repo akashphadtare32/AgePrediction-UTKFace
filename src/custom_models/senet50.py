@@ -192,10 +192,11 @@ def SENet50(
         x = Flatten()(x)
         x = Dense(classes, activation="softmax", name="classifier")(x)
     else:
-        if pooling == "avg":
-            x = GlobalAveragePooling2D()(x)
-        elif pooling == "max":
-            x = GlobalMaxPooling2D()(x)
+        if pooling is not None:
+            if pooling == "avg":
+                x = GlobalAveragePooling2D()(x)
+            elif pooling == "max":
+                x = GlobalMaxPooling2D()(x)
 
     # Ensure that the model takes into account
     # any potential predecessors of `input_tensor`.
