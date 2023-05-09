@@ -18,18 +18,18 @@ def fully_connected_with_dropout(x):
     """Apply Fully connected top layers with dropout."""
     x = GlobalAveragePooling2D()(x)
     x = Dense(1024, activation="relu")(x)
-    x = Dropout(0.5)(x)
+    x = Dropout(0.4)(x)
     x = Dense(512, activation="relu")(x)
-    x = Dropout(0.5)(x)
+    x = Dropout(0.3)(x)
     x = Dense(256)(x)
     return x
 
 
 def conv_with_fc_top(x):
     """Apply Convolutional top layers with one fully connected layer."""
-    x = Conv2D(128, (2, 2), activation="relu")(x)
-    x = Conv2D(256, (2, 2), activation="relu")(x)
-    x = Conv2D(512, (2, 2), activation="relu")(x)
+    x = Conv2D(128, (2, 2), activation="relu", padding="same")(x)
+    x = Conv2D(256, (2, 2), activation="relu", padding="same")(x)
+    x = Conv2D(512, (2, 2), activation="relu", padding="same")(x)
     x = GlobalAveragePooling2D()(x)
     x = Dense(128, activation="relu")(x)
     x = Dropout(0.5)(x)

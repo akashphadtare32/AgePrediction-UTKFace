@@ -73,5 +73,5 @@ def get_base_model(input_shape):
     """Get the base model."""
     base_model = load_vgg_face(input_shape)
 
-    age_model = Model(inputs=base_model.input, outputs=base_model.layers[-2].output)
+    age_model = Model(inputs=base_model.input, outputs=base_model.layers[-3].output)
     return age_model
