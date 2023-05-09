@@ -1,0 +1,22 @@
+architecture: SENet
+version: 50
+name: ${model.architecture}${model.version}
+freeze_base: true
+finetune_base: false
+num_finetune_layers: all
+preprocessing:
+  _target_: tensorflow.keras.applications.resnet.preprocess_input
+  _partial_: true
+instantiate:
+  _target_: src.custom_models.senet50.SENet50
+  weights: vggface
+  include_top: false
+  input_shape:
+    - ${train.target_size[0]}
+    - ${train.target_size[1]}
+    - ${dataset.channels}
+  pooling: null
+
+top_layer_architecture:
+  _target_: src.top_layer_architectures.resnet_top
+  _partial_: true
