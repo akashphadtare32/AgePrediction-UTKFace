@@ -17,11 +17,20 @@ def pass_through(x):
 def fully_connected_with_dropout(x):
     """Apply Fully connected top layers with dropout."""
     x = GlobalAveragePooling2D()(x)
-    x = Dense(1024, activation="relu")(x)
-    x = Dropout(0.4)(x)
     x = Dense(512, activation="relu")(x)
+    x = Dropout(0.4)(x)
+    x = Dense(256, activation="relu")(x)
     x = Dropout(0.3)(x)
-    x = Dense(256)(x)
+    x = Dense(128, activation="relu")(x)
+    return x
+
+
+def fully_connected(x):
+    """Apply Fully connected top layers without dropout."""
+    x = GlobalAveragePooling2D()(x)
+    x = Dense(512, activation="relu")(x)
+    x = Dense(256, activation="relu")(x)
+    x = Dense(128, activation="relu")(x)
     return x
 
 

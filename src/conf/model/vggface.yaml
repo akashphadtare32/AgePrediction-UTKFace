@@ -14,5 +14,5 @@ instantiate:
     - ${train.target_size[1]}
     - ${dataset.channels}
 top_layer_architecture:
-  _target_: src.top_layer_architectures.conv_with_fc_top
+  _target_: src.top_layer_architectures.resnet_top
   _partial_: true
