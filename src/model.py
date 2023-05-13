@@ -78,9 +78,8 @@ def build_model_from_cfg(
         cfg.lr_schedule.stage_1 if first_stage else cfg.lr_schedule.stage_2
     )
 
-    # if we are in second stage or the base model should not be frozen,
-    # then finetune the base model
-    if not first_stage or not cfg.model.freeze_base:
+    # if we are in second stage, then finetune the base model
+    if not first_stage:
         if cfg.model.num_finetune_layers == "all":
             model.trainable = True
         else:
