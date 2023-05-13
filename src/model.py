@@ -78,6 +78,16 @@ def build_model_from_cfg(
         cfg.lr_schedule.stage_1 if first_stage else cfg.lr_schedule.stage_2
     )
 
+    # if we are in second stage or the base model should not be frozen,
+    # then finetune the base model
+    if not first_stage or not cfg.model.freeze_base:
+        if cfg.model.num_finetune_layers == "all":
+            model.trainable = True
+        else:
+            finetune_layers = cfg.model.num_finetune_layers
+            for layer in model.layers[-finetune_layers:]:
+                layer.trainable = True
+
     optimizer = build_optimizer_from_cfg(cfg.optimizer, lr_schedule_cfg)
     loss_fn = cfg.train.loss
     model.compile(

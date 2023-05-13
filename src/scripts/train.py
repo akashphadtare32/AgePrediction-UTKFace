@@ -64,12 +64,6 @@ def train(train_ds, val_ds, cfg):
     )
     if cfg.model.finetune_base:
         model = build_model_from_cfg(cfg, model=model, first_stage=False)
-        if cfg.model.num_finetune_layers == "all":
-            model.trainable = True
-        else:
-            finetune_layers = cfg.model.num_finetune_layers
-            for layer in model.layers[-finetune_layers:]:
-                layer.trainable = True
         print(model.summary(expand_nested=False))
         initial_epoch = len(history.history["loss"])
         callbacks = get_callbacks(val_ds, initial_epoch=initial_epoch, **cfg.callbacks)
