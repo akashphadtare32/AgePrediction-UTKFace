@@ -8,8 +8,6 @@
 [pre-commit]: https://github.com/pre-commit/pre-commit
 [black]: https://github.com/psf/black
 
----
-
 ## Quick Start
 
 Below you can find the quick start guide for development.
