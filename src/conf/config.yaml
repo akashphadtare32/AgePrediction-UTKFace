@@ -29,7 +29,7 @@ augment:
     random_flip: horizontal
 
 wandb:
-  project: UTKFace-Age-Regression
+  project: UTKFace-v2
   group: ${model.architecture}
   name: null
   mode: online # or offline
