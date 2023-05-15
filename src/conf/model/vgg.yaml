@@ -3,7 +3,7 @@ version: 16 # or 19
 name: ${model.architecture}${model.version}
 freeze_base: true
 finetune_base: true
-num_finetune_layers: 7
+num_finetune_layers: 11
 preprocessing:
   _target_: tensorflow.keras.applications.vgg${model.version}.preprocess_input
   _partial_: true
@@ -18,5 +18,5 @@ instantiate:
   pooling: null
 
 top_layer_architecture:
-  _target_: src.top_layer_architectures.vgg_top
+  _target_: src.top_layer_architectures.fully_connected_with_dropout
   _partial_: true
