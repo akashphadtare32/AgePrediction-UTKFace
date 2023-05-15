@@ -1,16 +1,18 @@
 initialize_git:
 	git init
 
-install:
+create_env:
 	conda env create -f environment.yml
 	conda activate age-prediction
+
+install:
 	poetry install
 	poetry run pre-commit install
 
 activate:
 	conda activate age-prediction
 
-setup: initialize_git install
+setup: initialize_git create_env install
 
 download_b3fd:
 	@echo "Downloading B3FD dataset (5+ GB)"
@@ -33,10 +35,10 @@ test:
 	poetry run pytest -p no:warnings
 
 docs_view:
-	poetry run pdoc src --http localhost:8080
+	poetry run pdoc src --docformat numpy
 
 docs_save:
-	poetry run pdoc src -f -o docs
+	poetry run pdoc src -o docs --docformat numpy
 
 prepare_paperspace:
 	git pull
