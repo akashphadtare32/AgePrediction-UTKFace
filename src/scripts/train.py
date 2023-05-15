@@ -52,7 +52,7 @@ def train(train_ds, val_ds, cfg):
 
     callbacks = get_callbacks(val_ds, **cfg.callbacks)
 
-    model = build_model_from_cfg(cfg, first_stage=True)
+    model, base_model = build_model_from_cfg(cfg, first_stage=True)
     print(model.summary(expand_nested=True))
     history = model.fit(
         train_ds,
@@ -63,7 +63,9 @@ def train(train_ds, val_ds, cfg):
         workers=multiprocessing.cpu_count(),
     )
     if cfg.model.finetune_base:
-        model = build_model_from_cfg(cfg, model=model, first_stage=False)
+        model, base_model = build_model_from_cfg(
+            cfg, model=model, base_model=base_model, first_stage=False
+        )
         print(model.summary(expand_nested=False))
         initial_epoch = len(history.history["loss"])
         callbacks = get_callbacks(val_ds, initial_epoch=initial_epoch, **cfg.callbacks)

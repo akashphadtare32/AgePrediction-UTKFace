@@ -62,15 +62,15 @@ def get_complete_model(
 
     outputs = Dense(1, activation="relu")(x)
     model = Model(inputs, outputs)
-    return model
+    return model, base_model
 
 
 def build_model_from_cfg(
-    cfg: DictConfig, model=None, first_stage=True
-) -> tf.keras.Model:
+    cfg: DictConfig, model=None, base_model=None, first_stage=True
+):
     """Build the model from the config dict."""
     if model is None:
-        model = get_complete_model(
+        model, base_model = get_complete_model(
             cfg.model, target_size=cfg.train.target_size, channels=cfg.dataset.channels
         )
 
@@ -81,10 +81,10 @@ def build_model_from_cfg(
     # if we are in second stage, then finetune the base model
     if not first_stage:
         if cfg.model.num_finetune_layers == "all":
-            model.trainable = True
+            base_model.trainable = True
         else:
             finetune_layers = cfg.model.num_finetune_layers
-            for layer in model.layers[-finetune_layers:]:
+            for layer in base_model.layers[-finetune_layers:]:
                 layer.trainable = True
 
     optimizer = build_optimizer_from_cfg(cfg.optimizer, lr_schedule_cfg)
@@ -94,7 +94,7 @@ def build_model_from_cfg(
         loss=loss_fn,
         metrics=cfg.train.metrics,
     )
-    return model
+    return model, base_model
 
 
 def build_optimizer_from_cfg(
