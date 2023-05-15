@@ -84,3 +84,22 @@ def test_with_preprocessing():
         preprocessing = instantiate_preprocessing(cfg.model.preprocessing)
         assert preprocessing is not None
         x = preprocessing(x)
+
+
+def test_num_finetuning_layers():
+    """Test that the number of finetuning layers can be set."""
+    num_layers = 2
+
+    with initialize(version_base="1.3", config_path="../src/conf"):
+        cfg = compose(
+            config_name="config",
+            overrides=[
+                "model=efficientnetv2",
+                f"model.num_finetune_layers={num_layers}",
+            ],
+        )
+        _, base_model = build_model_from_cfg(cfg, first_stage=False)
+        for layer in base_model.layers[-num_layers:]:
+            assert layer.trainable is True
+        for layer in base_model.layers[:-num_layers]:
+            assert layer.trainable is False
