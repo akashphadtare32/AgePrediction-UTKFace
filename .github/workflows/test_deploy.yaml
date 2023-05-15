@@ -63,7 +63,7 @@ jobs:
       - name: Build docs
         run: |
           conda activate age-prediction
-          poetry run pdoc src --html -f -o docs
+          make docs_save
 
       - name: Move docs
         run: mv docs/src/* docs && rm -rf docs/src
