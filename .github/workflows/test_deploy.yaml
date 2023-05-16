@@ -65,9 +65,6 @@ jobs:
           conda activate age-prediction
           make docs_save
 
-      - name: Move docs
-        run: mv docs/src/* docs && rm -rf docs/src
-
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
