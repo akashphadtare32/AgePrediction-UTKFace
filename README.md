@@ -68,6 +68,8 @@ This behavior is determined based on the settings of
 - `finetune_base`: If `true`, it will fine-tune the base model. This means that the whole model is trained in the second stage. This setting depends on the model in use.
 - `num_finetune_layers`: The number of layers to fine-tune. If `all`, it will fine-tune the whole (base) model. If not `null` it must be an integer greater 0. E.g. use `model.num_finetune_layers=20` to finetune the top 20 layers of the **base** model (ignores the top layers outside of the base model)
 
+.. warning:: Using an integer to specify the number of layers to fine-tune does not work currently. Use `all` instead.
+
 #### Switching out the top-layer-architecture
 
 You can specify the top layer architecture with

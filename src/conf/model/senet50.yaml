@@ -3,7 +3,7 @@ version: 50
 name: ${model.architecture}${model.version}
 freeze_base: true
 finetune_base: false
-num_finetune_layers: 30
+num_finetune_layers: all
 preprocessing:
   _target_: tensorflow.keras.applications.resnet.preprocess_input
   _partial_: true

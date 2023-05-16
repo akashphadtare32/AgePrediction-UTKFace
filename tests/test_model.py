@@ -94,7 +94,7 @@ def test_num_finetuning_layers():
         cfg = compose(
             config_name="config",
             overrides=[
-                "model=efficientnetv2",
+                "model=vgg",
                 f"model.num_finetune_layers={num_layers}",
             ],
         )

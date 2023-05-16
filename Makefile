@@ -32,7 +32,7 @@ remove_b3fd_compressed:
 setup_b3fd: download_b3fd extract_b3fd
 
 test:
-	poetry run pytest -p no:warnings
+	poetry run pytest
 
 docs_view:
 	poetry run pdoc src --docformat numpy

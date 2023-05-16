@@ -41,6 +41,7 @@ def get_complete_model(
 ) -> tf.keras.Model:
     """Get the complete model."""
     base_model = instantiate_base_model(model_cfg.instantiate)
+    base_model._name = "base_model"
 
     # if the model has a base model, then we freeze it
     # (e.g. VGG, ResNet, EfficientNetV2 ...)
@@ -83,8 +84,9 @@ def build_model_from_cfg(
         if cfg.model.num_finetune_layers == "all":
             base_model.trainable = True
         else:
-            finetune_layers = cfg.model.num_finetune_layers
-
+            # ! this does not work: The test passes,
+            # ! but somehow the layers are not set to trainable after compilation
+            finetune_layers = int(cfg.model.num_finetune_layers)
             for layer in base_model.layers[-finetune_layers:]:
                 layer.trainable = True
     optimizer = build_optimizer_from_cfg(cfg.optimizer, lr_schedule_cfg)
@@ -94,7 +96,6 @@ def build_model_from_cfg(
         loss=loss_fn,
         metrics=cfg.train.metrics,
     )
-    print(base_model.summary())
     return model, base_model
 
 

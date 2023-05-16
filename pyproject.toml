@@ -52,3 +52,4 @@ line_length = 88
 [tool.pytest.ini_options]
 addopts = "-ra"
 testpaths = ["tests"]
+filterwarnings = ["ignore::DeprecationWarning"]

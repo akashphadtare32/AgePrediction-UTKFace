@@ -3,7 +3,7 @@ version: B0 # version ranges from B0 to B3 and S, M and L
 name: EfficientNetV2${model.version}
 freeze_base: true
 finetune_base: true
-num_finetune_layers: 40
+num_finetune_layers: all
 preprocessing: null
 
 # to pass to hydra.utils.instantiate

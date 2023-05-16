@@ -3,7 +3,7 @@ version: v2
 name: ${model.architecture}${model.version}
 freeze_base: false
 finetune_base: false
-num_finetune_layers: 0
+num_finetune_layers: all
 preprocessing:
   _target_: src.custom_models.baseline_cnn.preprocess_input
   _partial_: true
