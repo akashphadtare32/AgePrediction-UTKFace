@@ -3,7 +3,7 @@ version: 16 # or 19
 name: ${model.architecture}${model.version}
 freeze_base: true
 finetune_base: true
-num_finetune_layers: 4
+num_finetune_layers: all
 preprocessing:
   _target_: tensorflow.keras.applications.vgg${model.version}.preprocess_input
   _partial_: true
