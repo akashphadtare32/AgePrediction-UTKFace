@@ -48,6 +48,8 @@ callbacks:
     ckpt_filepath: ${ckpt_dir}/model-{epoch:02d}-{val_mae:.2f}
     visualize_predictions: false
     with_wandb_ckpt: false
+    sync_tensorboard: ${wandb.sync_tensorboard}
+    tensorboard_log_dir: ${log_dir}
 
 data_dir: data
 log_dir: logs

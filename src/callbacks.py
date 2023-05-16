@@ -16,6 +16,8 @@ def get_callbacks(
     ckpt_filepath: str = "ckpt/model-{epoch:02d}-{val_mae:.2f}",
     visualize_predictions=True,
     with_wandb_ckpt=True,
+    sync_tensorboard=False,
+    tensorboard_log_dir="logs",
 ) -> list[tf.keras.callbacks.Callback]:
     """Return the callbacks for model training.
 
@@ -43,6 +45,10 @@ def get_callbacks(
     with_wandb_ckpt : bool, default=True
         Whether to save model checkpoints to wandb.
         If `use_wandb=False`, then this is ignored.
+    sync_tensorboard : bool, default=False
+        Whether to sync the tensorboard logs to wandb.
+    tensorboard_log_dir : str, default="logs"
+        The directory to save the tensorboard logs.
     """
     callbacks = [
         tf.keras.callbacks.EarlyStopping(
@@ -53,7 +59,18 @@ def get_callbacks(
         ),
     ]
     if use_wandb:
-        callbacks.append(WandbMetricsLogger(initial_global_step=initial_epoch))
+        if sync_tensorboard:
+            callbacks.append(
+                tf.keras.callbacks.TensorBoard(
+                    histogram_freq=1,
+                    write_graph=False,
+                    write_images=False,
+                    write_steps_per_second=False,
+                    log_dir=tensorboard_log_dir,
+                )
+            )
+        else:
+            callbacks.append(WandbMetricsLogger(initial_global_step=initial_epoch))
         if model_ckpt and with_wandb_ckpt:
             callbacks.append(
                 WandbModelCheckpoint(

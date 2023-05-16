@@ -32,13 +32,14 @@ def main(cfg: DictConfig) -> None:
         tf.random.set_seed(cfg.train.seed)
         np.random.seed(cfg.train.seed)
 
+    if cfg.wandb.sync_tensorboard:
+        wandb.tensorboard.patch(root_logdir=cfg.log_dir)
+
     wandb.init(
         **cfg.wandb,
         config=OmegaConf.to_container(cfg, resolve=True),
     )
     filepaths = get_dataset_filepaths(cfg.dataset.path)
-    # get_label_func = get_label_function_for(cfg.dataset.name)
-    # labels = get_dataset_labels_from_filepaths(filepaths, get_label_func)
 
     train_filepaths, test_filepaths = model_selection.train_test_split(
         filepaths,
