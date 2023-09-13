@@ -1,4 +1,8 @@
-"""Training script."""
+"""Training script.
+
+This script is used to train a single model as specified
+in the config on the given training and validation dataset.
+"""
 import logging
 import multiprocessing
 

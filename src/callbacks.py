@@ -1,4 +1,9 @@
-"""Callbacks module."""
+"""Callbacks module.
+
+This module offers a function to get the callbacks
+for model training and implements a custom WandB Callback for Age Classification,
+that logs example predictions during training to show the progress of the model.
+"""
 
 import tensorflow as tf
 from wandb.keras import WandbEvalCallback, WandbMetricsLogger, WandbModelCheckpoint
@@ -115,7 +120,6 @@ class VisualizePredictionsWandbCallback(WandbEvalCallback):
 
     def add_ground_truth(self, logs=None):
         """Add ground truth data to the data table."""
-        # TODO: sample weight support
         for images, labels in self.data.take(1).as_numpy_iterator():
             for idx, (img, label) in enumerate(zip(images, labels)):
                 self.data_table.add_data(idx, wandb.Image(img), label)

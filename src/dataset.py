@@ -1,4 +1,8 @@
-"""Datasets module."""
+"""Datasets module.
+
+This modules offers functions to get the datasets,
+as well as functions to prepare the datasets for training and data augmentation.
+"""
 
 import logging
 from collections.abc import Sequence

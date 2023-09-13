@@ -1,4 +1,8 @@
-"""Model module."""
+"""Model module.
+
+This module handles the building of models from config files,
+by instantiating the preprocessing function, the optimizer and the model itself.
+"""
 import tensorflow as tf
 from hydra.utils import instantiate
 from omegaconf import DictConfig

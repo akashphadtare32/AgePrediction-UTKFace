@@ -1,4 +1,9 @@
-"""Script to evaluate the predictions on the test set."""
+"""Script to evaluate the predictions on the test set.
+
+This script evaluates the predictions based on the mean absolute error,
+the age distribution, empirical CDFs via the Kolmogorov-Smirnov test,
+and the residuals. All plots are logged to wandb.
+"""
 
 
 from sklearn.metrics import mean_absolute_error

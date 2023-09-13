@@ -57,6 +57,7 @@ def vgg_top(x):
     return x
 
 
+# I don't know why I named this `resnet_top`
 def resnet_top(x):
     """Apply the top layers of the (inception) resnet model."""
     x = GlobalAveragePooling2D()(x)

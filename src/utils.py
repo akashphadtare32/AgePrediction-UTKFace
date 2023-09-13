@@ -1,4 +1,4 @@
-"""Utility functions."""
+"""Utility functions mainly for Weights & Biases."""
 
 import tensorflow as tf
 

@@ -36,7 +36,6 @@ def cross_validate(train_filepaths, test_ds, cfg):
         cache=cfg.train.cache_dataset,
     )
 
-    # perform Stratified K-Fold cross-validation
     cv = model_selection.KFold(
         n_splits=cfg.train.cv_folds, shuffle=True, random_state=cfg.train.seed
     )
